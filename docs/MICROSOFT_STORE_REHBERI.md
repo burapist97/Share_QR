@@ -13,7 +13,7 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 - Bir **Microsoft hesabı** (Outlook, Hotmail veya Xbox hesabı olur; yoksa account.microsoft.com'dan ücretsiz açılır)
 - **Kimlik kartı veya pasaport** (kimlik doğrulaması için)
 - Telefon kamerası (kimlik doğrulamada selfie çekilir)
-- Destek için kullanacağınız bir **e-posta adresi** (mağazada görünür)
+- Destek kanalı: e-posta göstermek zorunda değilsiniz; GitHub Issues sayfası kullanılıyor (https://github.com/burapist97/Share_QR/issues)
 - Windows bilgisayar **gerekmez**: paket GitHub'da üretilir, mağaza görselleri de repoda hazır.
 
 ---
@@ -79,9 +79,9 @@ Bu değerler gizli değildir ama **birebir** kopyalanmalıdır (boşluk ve büy�
 ### 5a. Gizlilik politikası
 Uygulama internete dosya yükleyebildiği için Store bir **gizlilik politikası bağlantısı** ister.
 
-1. Repoda `store/PRIVACY.md` dosyasını açın, kalem simgesine (Edit) tıklayın.
-2. `{{CONTACT_EMAIL}}` yazan üç yeri destek e-postanızla değiştirin → **Commit changes**.
-3. Bağlantı: repoda GitHub Pages açık olduğu için büyük ihtimalle şu adreste yayınlanır:
+1. İletişim olarak e-posta yerine GitHub Issues sayfası yazılı; ek bir şey yapmanız gerekmez.
+   Repoda **Issues** sekmesinin görünür olduğundan emin olun (yoksa Settings → General → Features → ☑ Issues).
+2. Bağlantı: repoda GitHub Pages açık olduğu için büyük ihtimalle şu adreste yayınlanır:
    **https://burapist97.github.io/Share_QR/store/PRIVACY.html**
    Tarayıcıda açıp sayfanın göründüğünü kontrol edin. Açılmazsa bana yazın.
 
@@ -117,7 +117,7 @@ her birini doldurup **Save** deyin.
 - **Category:** *Productivity* (Verimlilik)
 - **Privacy policy URL:** Aşama 5a'daki bağlantı
 - **Website:** `https://github.com/burapist97/Share_QR` (isteğe bağlı)
-- **Support contact info:** destek e-postanız
+- **Support contact info:** `https://github.com/burapist97/Share_QR/issues` (e-posta yerine bağlantı da kabul edilir)
 - Diğer kutular (sistem gereksinimleri vb.) boş kalabilir.
 
 ### 3) Age ratings (Yaş derecelendirmesi)

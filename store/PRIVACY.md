@@ -21,7 +21,7 @@ Files uploaded to these services are subject to that service's own privacy polic
 
 **Link to QR:** Text you turn into a QR code stays on your PC.
 
-**Contact:** {{CONTACT_EMAIL}}
+**Contact:** Open an issue at https://github.com/burapist97/Share_QR/issues
 
 ---
 
@@ -35,7 +35,7 @@ Files uploaded to these services are subject to that service's own privacy polic
 
 **Linkten QR:** QR koda dönüştürdüğünüz metin bilgisayarınızdan çıkmaz.
 
-**İletişim:** {{CONTACT_EMAIL}}
+**İletişim:** https://github.com/burapist97/Share_QR/issues adresinden bir kayıt (issue) açın.
 
 ---
 
@@ -49,4 +49,4 @@ Files uploaded to these services are subject to that service's own privacy polic
 
 **Enlace a QR:** El texto que conviertes en código QR no sale de tu ordenador.
 
-**Contacto:** {{CONTACT_EMAIL}}
+**Contacto:** abre una incidencia en https://github.com/burapist97/Share_QR/issues
