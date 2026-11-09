@@ -9,8 +9,8 @@ import socket
 import sys
 import threading
 
-APP_NAME = "ShareQR"
-STARTUP_TASK_ID = "ShareQRStartup"  # AppxManifest.xml ile aynı olmalı
+APP_NAME = "Scanload"
+STARTUP_TASK_ID = "ScanloadStartup"  # AppxManifest.xml ile aynı olmalı
 RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
 INSTANCE_PORT = 47613  # tek kopya kontrolü için yalnızca 127.0.0.1
 

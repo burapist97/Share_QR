@@ -1,7 +1,7 @@
 """
-Share QR (Windows) - sistem tepsisinde duran, tıklanınca küçük bir pencere açan uygulama.
+Scanload (Windows) - sistem tepsisinde duran, tıklanınca küçük bir pencere açan uygulama.
 
-Çalıştırma (geliştirme):  python share_qr.py
+Çalıştırma (geliştirme):  python scanload.py
 Paketleme:                ../build.ps1   (PyInstaller + MSIX)
 """
 
@@ -28,7 +28,7 @@ def resource(*parts):
 
 def settings_path():
     root = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~/.config")
-    folder = os.path.join(root, "ShareQR")
+    folder = os.path.join(root, "Scanload")
     os.makedirs(folder, exist_ok=True)
     return os.path.join(folder, "settings.json")
 
@@ -265,7 +265,7 @@ class App:
             pystray.Menu.SEPARATOR,
             pystray.MenuItem(lambda item: self.t("tray.quit"), self.quit),
         )
-        self.tray = pystray.Icon("ShareQR", Image.open(resource("assets", "tray.png")), "Share QR", menu)
+        self.tray = pystray.Icon("Scanload", Image.open(resource("assets", "tray.png")), "Scanload", menu)
         self.tray.run_detached()
 
     def update_tray(self):
@@ -281,7 +281,7 @@ class App:
 
         start_hidden = winplat.launched_by_startup()
         self.window = webview.create_window(
-            "Share QR",
+            "Scanload",
             resource("ui", "index.html"),
             js_api=self.api,
             width=WIN_W,

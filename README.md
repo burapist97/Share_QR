@@ -1,4 +1,4 @@
-# Share QR
+# Scanload
 
 Send files from your PC to your iPhone or Android phone with a QR code. No cables, no app on the phone.
 
@@ -15,7 +15,7 @@ Send files from your PC to your iPhone or Android phone with a QR code. No cable
 ## Repository layout
 ```
 app/                         Windows app (Python + pywebview)
-  share_qr.py                tray icon, window, JavaScript bridge (entry point)
+  scanload.py                tray icon, window, JavaScript bridge (entry point)
   core.py                    local share server, networks, uploads, QR codes
   winplat.py                 open at startup, MSIX detection, single instance
   i18n.json, i18n.py         English, Turkish, Spanish strings
@@ -41,8 +41,8 @@ simple/                      earlier lightweight versions (Python script / singl
 ```
 
 ## Build
-Every push runs **Actions → Windows build** on a Windows runner and publishes a test build as the `ShareQR-test` artifact (`.msix`, portable `.zip`, test certificate).
-To build the Store package, use **Run workflow** and enter the three Partner Center values; the result is the `ShareQR-STORE` artifact.
+Every push runs **Actions → Windows build** on a Windows runner and publishes a test build as the `Scanload-test` artifact (`.msix`, portable `.zip`, test certificate).
+To build the Store package, use **Run workflow** and enter the three Partner Center values; the result is the `Scanload-STORE` artifact.
 
 Locally (Windows, Python 3.12, Windows SDK):
 ```powershell
@@ -56,7 +56,7 @@ Import-Certificate -FilePath build\test.cer -CertStoreLocation Cert:\LocalMachin
 Run from source:
 ```powershell
 pip install -r requirements.txt
-python app\share_qr.py
+python app\scanload.py
 ```
 
 ## Publish to the Microsoft Store
@@ -69,7 +69,7 @@ Step-by-step guide in Turkish: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_
    .\build.ps1 -Version 1.1.0.0 -IdentityName "<Package/Identity/Name>" -Publisher "<Package/Identity/Publisher>" -PublisherDisplayName "<Package/Properties/PublisherDisplayName>"
    ```
    Or without a Windows PC: **Actions → Windows build → Run workflow** and enter the same three values.
-4. **Packages:** upload `build\ShareQR_1.1.0_x64.msix`. The Store signs it; you don’t need a certificate.
+4. **Packages:** upload `build\Scanload_1.1.0_x64.msix`. The Store signs it; you don’t need a certificate.
 5. **Store listings:** copy from `store/STORE_LISTING.md` (English, Turkish, Spanish) and add screenshots.
 6. **Privacy policy:** publish `store/PRIVACY.md` and paste its URL. Replace `{{CONTACT_EMAIL}}` first.
 7. **Submission options → Notes for certification:**
@@ -92,6 +92,6 @@ Bilgisayardan iPhone veya Android telefona QR kod ile dosya gönderin. Kablo yok
 - Sistem tepsisinde durur, tıklayınca küçük bir pencere açar, Windows ile başlayabilir.
 - İngilizce (varsayılan), Türkçe, İspanyolca. Açık ve koyu görünüm.
 
-**Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**ShareQR-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**ShareQR-STORE**).
+**Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**Scanload-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**Scanload-STORE**).
 
 **Store'a gönderme:** Adım adım Türkçe rehber: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md). Mağaza metinleri `store/STORE_LISTING.md`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).

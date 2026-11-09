@@ -1,4 +1,4 @@
-# Share QR'ı Microsoft Store'a yükleme rehberi
+# Scanload'u Microsoft Store'a yükleme rehberi
 
 Hiç bilmeyen biri için, baştan sona. Toplam süre: hesap onayı dahil 1–2 saatlik iş, ardından
 Microsoft'un incelemesi için birkaç gün bekleme.
@@ -36,8 +36,8 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 
 1. Partner Center'da **Apps and games** (Uygulamalar ve oyunlar) bölümüne girin.
 2. **+ New product** → **MSIX or PWA app** seçin.
-3. Ad olarak **Share QR** yazın → **Check availability** → **Reserve product name**.
-   - Ad alınmışsa şunları deneyin: *QR Beam*, *Share QR – Send to Phone*. Seçtiğiniz adı bana
+3. Ad olarak **Scanload** yazın → **Check availability** → **Reserve product name**.
+   - Ad alınmışsa şunları deneyin: *Scanfetch*, *Scanload – Files to Phone*. Seçtiğiniz adı bana
      yazın, uygulamanın içindeki adı da ona göre güncellerim.
 
 ---
@@ -50,7 +50,7 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 
 | Partner Center'daki ad | Örnek |
 |---|---|
-| **Package/Identity/Name** | `12345AdSoyad.ShareQR` |
+| **Package/Identity/Name** | `12345AdSoyad.Scanload` |
 | **Package/Identity/Publisher** | `CN=1A2B3C4D-1234-5678-9ABC-0123456789AB` |
 | **Package/Properties/PublisherDisplayName** | `Ad Soyad` |
 
@@ -67,8 +67,8 @@ Bu değerler gizli değildir ama **birebir** kopyalanmalıdır (boşluk ve büy�
    - **identity_name / publisher / publisher_display_name:** Aşama 3'teki üç değer
 4. Yeşil **Run workflow** düğmesine basın. Yaklaşık 2–3 dakika sürer.
 5. Bitince (yeşil ✓) çalışmaya tıklayın, sayfanın altındaki **Artifacts** bölümünden
-   **ShareQR-STORE** dosyasını indirin.
-6. İnen zip'i açın. İçindeki **`ShareQR_1.1.0_x64.msix`** Store'a yükleyeceğiniz dosyadır.
+   **Scanload-STORE** dosyasını indirin.
+6. İnen zip'i açın. İçindeki **`Scanload_1.1.0_x64.msix`** Store'a yükleyeceğiniz dosyadır.
 
 > Kırmızı ✗ çıkarsa çalışmaya tıklayıp hata satırının ekran görüntüsünü bana gönderin.
 

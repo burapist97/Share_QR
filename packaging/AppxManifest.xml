@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Share QR - MSIX manifesti.
+  Scanload - MSIX manifesti.
   {{...}} alanları build.ps1 tarafından doldurulur. Store'a göndermeden önce
   IdentityName / Publisher / PublisherDisplayName değerlerini Partner Center'daki
   "Ürün kimliği" (Product identity) sayfasından kopyalayın.
@@ -17,7 +17,7 @@
   <Identity Name="{{IDENTITY_NAME}}" Publisher="{{PUBLISHER}}" Version="{{VERSION}}" ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>Share QR</DisplayName>
+    <DisplayName>Scanload</DisplayName>
     <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -33,19 +33,19 @@
   </Resources>
 
   <Applications>
-    <Application Id="ShareQR" Executable="ShareQR\ShareQR.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="Scanload" Executable="Scanload\Scanload.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
-        DisplayName="Share QR"
+        DisplayName="Scanload"
         Description="Send files from your PC to your phone with a QR code."
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Share QR" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Scanload" />
       </uap:VisualElements>
       <Extensions>
         <!-- Windows ile başlat (kullanıcı uygulama içinden açar/kapatır) -->
-        <uap5:Extension Category="windows.startupTask" Executable="ShareQR\ShareQR.exe" EntryPoint="Windows.FullTrustApplication">
-          <uap5:StartupTask TaskId="ShareQRStartup" Enabled="false" DisplayName="Share QR" />
+        <uap5:Extension Category="windows.startupTask" Executable="Scanload\Scanload.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap5:StartupTask TaskId="ScanloadStartup" Enabled="false" DisplayName="Scanload" />
         </uap5:Extension>
       </Extensions>
     </Application>
@@ -63,7 +63,7 @@
          "all": Windows çoğu Wi-Fi'ı "Ortak" profilde açar. Sunucu yalnızca paylaşım sürerken açıktır
          ve rastgele anahtar olmadan dosya vermez. -->
     <desktop2:Extension Category="windows.firewallRules">
-      <desktop2:FirewallRules Executable="ShareQR\ShareQR.exe">
+      <desktop2:FirewallRules Executable="Scanload\Scanload.exe">
         <desktop2:Rule Direction="in" IPProtocol="TCP" Profile="all" LocalPortMin="8765" LocalPortMax="8814" />
       </desktop2:FirewallRules>
     </desktop2:Extension>

@@ -1,10 +1,10 @@
-# Share QR — Privacy Policy
+# Scanload — Privacy Policy
 
 _Last updated: November 9, 2026_ · [Türkçe](#türkçe) · [Español](#español)
 
-Share QR lets you send files from your PC to your phone with a QR code.
+Scanload lets you send files from your PC to your phone with a QR code.
 
-**Data we collect:** None. Share QR doesn't require an account and contains no ads, analytics, or tracking. Your settings (language, last send method, network, and service) are stored only on your PC.
+**Data we collect:** None. Scanload doesn't require an account and contains no ads, analytics, or tracking. Your settings (language, last send method, network, and service) are stored only on your PC.
 
 **Same Wi-Fi:** The files you choose travel directly from your PC to your phone over your local network. They aren't uploaded anywhere. Each share uses a random, unguessable address and stops when you click Stop Sharing.
 
@@ -27,7 +27,7 @@ Files uploaded to these services are subject to that service's own privacy polic
 
 ## Türkçe
 
-**Toplanan veriler:** Yok. Share QR hesap istemez; reklam, analiz veya izleme içermez. Ayarlarınız (dil, son gönderim yöntemi, ağ ve servis) yalnızca bilgisayarınızda saklanır.
+**Toplanan veriler:** Yok. Scanload hesap istemez; reklam, analiz veya izleme içermez. Ayarlarınız (dil, son gönderim yöntemi, ağ ve servis) yalnızca bilgisayarınızda saklanır.
 
 **Aynı Wi-Fi:** Seçtiğiniz dosyalar yerel ağınız üzerinden bilgisayarınızdan doğrudan telefonunuza gider, hiçbir yere yüklenmez. Her paylaşım tahmin edilemeyen rastgele bir adres kullanır ve “Paylaşımı Bitir”e bastığınızda sona erer.
 
@@ -41,7 +41,7 @@ Files uploaded to these services are subject to that service's own privacy polic
 
 ## Español
 
-**Datos que recogemos:** Ninguno. Share QR no requiere cuenta y no tiene anuncios, analíticas ni seguimiento. Tus ajustes (idioma, último método de envío, red y servicio) solo se guardan en tu ordenador.
+**Datos que recogemos:** Ninguno. Scanload no requiere cuenta y no tiene anuncios, analíticas ni seguimiento. Tus ajustes (idioma, último método de envío, red y servicio) solo se guardan en tu ordenador.
 
 **Misma Wi-Fi:** Los archivos que elijas van directamente de tu ordenador a tu móvil por tu red local. No se suben a ningún sitio. Cada envío usa una dirección aleatoria imposible de adivinar y termina al hacer clic en Dejar de compartir.
 

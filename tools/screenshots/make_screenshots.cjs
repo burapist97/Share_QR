@@ -21,21 +21,21 @@ const CAPTIONS = {
   en: [
     ['Send files from your PC to your phone', 'Drop files, scan the code, and they’re on your phone. Works with iPhone and Android. Nothing to install on the phone.'],
     ['Scan it with your camera', 'Your phone opens a simple download page. On the same Wi-Fi, files go straight to your phone and never leave your network.'],
-    ['On another network? Use the internet', 'Choose tmpfiles.org, Litterbox, temp.sh, or gofile.io, or let Share QR choose by file size.'],
+    ['On another network? Use the internet', 'Choose tmpfiles.org, Litterbox, temp.sh, or gofile.io, or let Scanload choose by file size.'],
     ['Turn any link into a QR code', 'Websites, addresses, notes. The code updates as you type, and you can save it as a PNG.'],
-    ['Always one click away', 'Share QR waits in the system tray and can open at startup. Light and dark appearance, in English, Turkish, and Spanish.'],
+    ['Always one click away', 'Scanload waits in the system tray and can open at startup. Light and dark appearance, in English, Turkish, and Spanish.'],
   ],
   tr: [
     ['Bilgisayardan telefona dosya gönderin', 'Dosyaları bırakın, kodu okutun, dosyalar telefonunuzda. iPhone ve Android ile çalışır; telefona hiçbir şey kurmanız gerekmez.'],
     ['Kamerayla okutun, indirin', 'Telefonunuzda sade bir indirme sayfası açılır. Aynı Wi-Fi’da dosyalar doğrudan telefona gider, ağınızdan dışarı çıkmaz.'],
-    ['Başka ağda mısınız? İnternetten gönderin', 'tmpfiles.org, Litterbox, temp.sh veya gofile.io’yu seçin ya da Share QR dosya boyutuna göre seçsin.'],
+    ['Başka ağda mısınız? İnternetten gönderin', 'tmpfiles.org, Litterbox, temp.sh veya gofile.io’yu seçin ya da Scanload dosya boyutuna göre seçsin.'],
     ['Her bağlantıyı QR koda çevirin', 'Web siteleri, adresler, notlar. Kod siz yazdıkça güncellenir; PNG olarak kaydedebilirsiniz.'],
     ['Her an bir tık uzağınızda', 'Sistem tepsisinde bekler, isterseniz Windows ile açılır. Açık ve koyu tema; İngilizce, Türkçe ve İspanyolca.'],
   ],
   es: [
     ['Envía archivos del ordenador al móvil', 'Suelta los archivos, escanea el código y ya están en tu móvil. Funciona con iPhone y Android, sin instalar nada en el móvil.'],
     ['Escanéalo con la cámara', 'El móvil abre una página de descarga sencilla. En la misma Wi-Fi, los archivos van directos al móvil y no salen de tu red.'],
-    ['¿Otra red? Envía por internet', 'Elige tmpfiles.org, Litterbox, temp.sh o gofile.io, o deja que Share QR elija según el tamaño del archivo.'],
+    ['¿Otra red? Envía por internet', 'Elige tmpfiles.org, Litterbox, temp.sh o gofile.io, o deja que Scanload elija según el tamaño del archivo.'],
     ['Convierte cualquier enlace en un código QR', 'Webs, direcciones, notas. El código se actualiza mientras escribes y puedes guardarlo como PNG.'],
     ['Siempre a un clic', 'Espera en la bandeja del sistema y puede abrirse al iniciar Windows. Tema claro y oscuro, en inglés, turco y español.'],
   ],
@@ -103,7 +103,7 @@ function compose({ title, sub, dark, windows, phone }) {
     .phone img{display:block;width:312px;border-radius:42px}
   </style></head><body>
     <div class="text">
-      <div class="brand"><div class="logo"><svg viewBox="0 0 16 16"><path d="M2 2h4.5v4.5H2zm1.4 1.4v1.7h1.7V3.4zM9.5 2H14v4.5H9.5zm1.4 1.4v1.7h1.7V3.4zM2 9.5h4.5V14H2zm1.4 1.4v1.7h1.7v-1.7zM12 9v3.3l1.1-1.1.9.9-2.6 2.6-2.6-2.6.9-.9 1.1 1.1V9z"/></svg></div>Share QR</div>
+      <div class="brand"><div class="logo"><svg viewBox="0 0 16 16"><path d="M2 2h4.5v4.5H2zm1.4 1.4v1.7h1.7V3.4zM9.5 2H14v4.5H9.5zm1.4 1.4v1.7h1.7V3.4zM2 9.5h4.5V14H2zm1.4 1.4v1.7h1.7v-1.7zM12 9v3.3l1.1-1.1.9.9-2.6 2.6-2.6-2.6.9-.9 1.1 1.1V9z"/></svg></div>Scanload</div>
       <h1>${title}</h1><p>${sub}</p>
     </div>${wins}${ph}
   </body></html>`;
