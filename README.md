@@ -25,7 +25,8 @@ packaging/
   AppxManifest.xml           MSIX manifest (startup task, firewall rule, languages)
   Assets/                    Start menu and Store tile images
 store/
-  STORE_LISTING.md           Store texts in English, Turkish, Spanish
+  listing/                   Store texts, one file per language (en-US, tr-TR, es-ES)
+  art/                       poster, box art, super hero art, tile icons
   PRIVACY.md                 privacy policy (EN/TR/ES)
   store_logo_300.png         Store logo
   screenshots/{en,tr,es}/    5 Store screenshots per language, 1920×1080
@@ -70,7 +71,7 @@ Step-by-step guide in Turkish: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_
    ```
    Or without a Windows PC: **Actions → Windows build → Run workflow** and enter the same three values.
 4. **Packages:** upload `build\Scanload_1.1.0_x64.msix`. The Store signs it; you don’t need a certificate.
-5. **Store listings:** copy from `store/STORE_LISTING.md` (English, Turkish, Spanish) and add screenshots.
+5. **Store listings:** copy from `store/listing/` (one file per language) and upload `store/screenshots/` and `store/art/`.
 6. **Privacy policy:** publish `store/PRIVACY.md` and paste its URL. Replace `{{CONTACT_EMAIL}}` first.
 7. **Submission options → Notes for certification:**
    > The app uses runFullTrust because it runs a small HTTP server so a phone on the same network can download files (TCP 8765–8814 only, only while sharing). It lives in the system tray; click the tray icon to open the window.
@@ -94,4 +95,4 @@ Bilgisayardan iPhone veya Android telefona QR kod ile dosya gönderin. Kablo yok
 
 **Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**Scanload-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**Scanload-STORE**).
 
-**Store'a gönderme:** Adım adım Türkçe rehber: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md). Mağaza metinleri `store/STORE_LISTING.md`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).
+**Store'a gönderme:** Adım adım Türkçe rehber: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md). Mağaza metinleri `store/listing/`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).

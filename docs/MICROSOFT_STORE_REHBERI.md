@@ -138,7 +138,8 @@ IARC anketi doldurulur, sonunda otomatik bir yaş sınırı verilir.
 ### 5) Store listings (Mağaza sayfası)
 Paket üç dili içerdiği için **English (United States)**, **Turkish** ve **Spanish** listeleri
 görünür (görünmezse **Manage additional languages** ile ekleyin). Her dil için:
-- **Description, Short description, Features, Keywords:** `store/STORE_LISTING.md` dosyasından kopyalayın
+- **Tüm alanlar, sırasıyla:** `store/listing/en-US.md`, `tr-TR.md`, `es-ES.md` (her alan ayrı kutuda, kopyala düğmesiyle)
+- **Poster, box art, super hero art, ikonlar:** `store/art/`
 - **Screenshots:** o dilin klasöründeki 5 görsel (`store/screenshots/en/` → English, `tr/` → Turkish, `es/` → Spanish), 01'den 05'e sırayla
 - **Store logo** (isteğe bağlı): `store/store_logo_300.png`
 
