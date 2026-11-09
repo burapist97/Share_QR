@@ -62,9 +62,9 @@ Bu değerler gizli değildir ama **birebir** kopyalanmalıdır (boşluk ve büy�
 
 1. **https://github.com/burapist97/Share_QR/actions** adresine gidin.
 2. Soldan **Windows build** → sağda **Run workflow** düğmesine tıklayın.
-3. Açılan formu doldurun:
-   - **Version:** ilk gönderim için `1.1.0.0` (sonraki her güncellemede artırın: `1.1.1.0`, `1.2.0.0`…; son hane hep `0`)
-   - **identity_name / publisher / publisher_display_name:** Aşama 3'teki üç değer
+3. Açılan formda Partner Center değerleri (**AppicStudio.scanload**, yayıncı kimliği, **Appic Studio**,
+   ürün adı **scanload**) hazır gelir. Yalnızca **Version** alanına bakın: ilk gönderim `1.1.0.0`,
+   sonraki her güncellemede artırın (`1.1.1.0`, `1.2.0.0`…; son hane hep `0`).
 4. Yeşil **Run workflow** düğmesine basın. Yaklaşık 2–3 dakika sürer.
 5. Bitince (yeşil ✓) çalışmaya tıklayın, sayfanın altındaki **Artifacts** bölümünden
    **Scanload-STORE** dosyasını indirin.

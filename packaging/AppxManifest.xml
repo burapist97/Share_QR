@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Scanload - MSIX manifesti.
-  {{...}} alanları build.ps1 tarafından doldurulur. Store'a göndermeden önce
+  {{...}} alanları build.ps1 tarafından doldurulur. DISPLAY_NAME, Partner Center'da ayrılan
+  ürün adıyla birebir aynı olmalıdır (büyük/küçük harf dahil). Store'a göndermeden önce
   IdentityName / Publisher / PublisherDisplayName değerlerini Partner Center'daki
   "Ürün kimliği" (Product identity) sayfasından kopyalayın.
 -->
@@ -17,7 +18,7 @@
   <Identity Name="{{IDENTITY_NAME}}" Publisher="{{PUBLISHER}}" Version="{{VERSION}}" ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>Scanload</DisplayName>
+    <DisplayName>{{DISPLAY_NAME}}</DisplayName>
     <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -35,17 +36,17 @@
   <Applications>
     <Application Id="Scanload" Executable="Scanload\Scanload.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
-        DisplayName="Scanload"
+        DisplayName="{{DISPLAY_NAME}}"
         Description="Send files from your PC to your phone with a QR code."
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Scanload" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="{{DISPLAY_NAME}}" />
       </uap:VisualElements>
       <Extensions>
         <!-- Windows ile başlat (kullanıcı uygulama içinden açar/kapatır) -->
         <uap5:Extension Category="windows.startupTask" Executable="Scanload\Scanload.exe" EntryPoint="Windows.FullTrustApplication">
-          <uap5:StartupTask TaskId="ScanloadStartup" Enabled="false" DisplayName="Scanload" />
+          <uap5:StartupTask TaskId="ScanloadStartup" Enabled="false" DisplayName="{{DISPLAY_NAME}}" />
         </uap5:Extension>
       </Extensions>
     </Application>

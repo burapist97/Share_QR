@@ -19,6 +19,7 @@ param(
   [string]$IdentityName = "Scanload.Dev",
   [string]$Publisher = "CN=ScanloadDev",
   [string]$PublisherDisplayName = "Scanload",
+  [string]$DisplayName = "Scanload",
   [switch]$Sign,
   [switch]$SkipInstall
 )
@@ -72,7 +73,8 @@ Copy-Item "$build\dist\Scanload" "$layout\Scanload" -Recurse
 Copy-Item "$root\packaging\Assets" "$layout\Assets" -Recurse
 $manifest = Get-Content "$root\packaging\AppxManifest.xml" -Raw -Encoding UTF8
 $manifest = $manifest.Replace('{{IDENTITY_NAME}}', $IdentityName).Replace('{{PUBLISHER}}', $Publisher).
-  Replace('{{VERSION}}', $Version).Replace('{{PUBLISHER_DISPLAY_NAME}}', [Security.SecurityElement]::Escape($PublisherDisplayName))
+  Replace('{{VERSION}}', $Version).Replace('{{PUBLISHER_DISPLAY_NAME}}', [Security.SecurityElement]::Escape($PublisherDisplayName)).
+  Replace('{{DISPLAY_NAME}}', [Security.SecurityElement]::Escape($DisplayName))
 [IO.File]::WriteAllText("$layout\AppxManifest.xml", $manifest, (New-Object Text.UTF8Encoding $false))
 
 # Ölçeklenmiş ikonlar için kaynak dizini (resources.pri)
