@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>QR Paylaş</title>
+<style>
+:root{
+  --bg:#f5f5f7; --card:#fff; --soft:rgba(0,0,0,.04); --soft2:rgba(0,0,0,.07);
+  --text:#1d1d1f; --muted:#86868b; --faint:#aeaeb2; --line:rgba(0,0,0,.06);
+  --accent:#0a7cff; --tint:rgba(10,124,255,.08); --tint2:rgba(10,124,255,.14);
+  --green:#30c158; --red:#ff453a;
+  --shadow:0 1px 2px rgba(0,0,0,.03),0 6px 20px rgba(0,0,0,.045);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --r:18px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f0f11; --card:#1a1a1d; --soft:rgba(255,255,255,.05); --soft2:rgba(255,255,255,.09);
+  --text:#f5f5f7; --muted:#98989d; --faint:#636366; --line:rgba(255,255,255,.07);
+  --accent:#4aa0ff; --tint:rgba(74,160,255,.12); --tint2:rgba(74,160,255,.2);
+  --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-sm:0 1px 3px rgba(0,0,0,.5);
+}}
+*{box-sizing:border-box;margin:0;-webkit-user-select:none;user-select:none}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.42 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",sans-serif;
+  overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;letter-spacing:-.05px}
+button,select,textarea{font:inherit;color:inherit}
+button{border:none;background:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:10px}
+svg{display:block}
+[hidden]{display:none!important}
+
+/* başlık */
+.bar{display:flex;align-items:center;gap:10px;padding:16px 16px 10px 20px;flex:none}
+.logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(180deg,#4a9cff,#0a6ee6);display:grid;place-items:center;flex:none}
+.logo svg{width:15px;height:15px;fill:#fff}
+.bar h1{flex:1;font-size:16px;font-weight:600;letter-spacing:-.2px}
+.icon-btn{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);transition:background .15s}
+.icon-btn:hover{background:var(--soft2)}
+.icon-btn svg{width:16px;height:16px;fill:currentColor}
+
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:2px 16px 18px}
+.scroll::-webkit-scrollbar{width:0}
+.view{display:none;animation:fade .2s ease}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* segmentli kontrol */
+.seg{display:flex;background:var(--soft);border-radius:12px;padding:3px;position:relative}
+.seg button{flex:1;position:relative;z-index:1;padding:7px 0;font-size:13px;font-weight:500;color:var(--muted);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:color .2s}
+.seg button.on{color:var(--text)}
+.seg button svg{width:14px;height:14px;fill:currentColor}
+.seg .th{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--card);border-radius:9px;box-shadow:var(--shadow-sm);
+  transition:transform .28s cubic-bezier(.3,.7,.3,1)}
+.seg.right .th{transform:translateX(100%)}
+.tabs{margin-bottom:16px}
+
+/* adımlar */
+.steps{display:flex;align-items:center;gap:6px;margin:0 2px 14px;color:var(--faint);font-size:12px}
+.step{display:flex;align-items:center;gap:6px;white-space:nowrap;transition:color .2s;min-width:0}
+.step span{overflow:hidden;text-overflow:ellipsis}
+.step i{font-style:normal;width:18px;height:18px;border-radius:50%;background:var(--soft2);display:grid;place-items:center;font-size:11px;font-weight:600;transition:.2s}
+.step.on{color:var(--text)}
+.step.on i{background:var(--accent);color:#fff}
+.step.ok i{background:var(--tint2);color:var(--accent)}
+.steps .dash{flex:1;height:1px;background:var(--line);min-width:6px}
+
+/* kartlar */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow)}
+.label{font-size:12px;font-weight:500;color:var(--muted);margin:20px 4px 8px}
+.desc{font-size:12.5px;color:var(--muted);line-height:1.5;padding:0 16px 14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 16px}
+.chip{font-size:11.5px;font-weight:500;color:var(--accent);background:var(--tint);border-radius:999px;padding:3px 10px}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin:10px 6px 0;display:flex;gap:7px}
+.note svg{width:14px;height:14px;fill:var(--faint);flex:none;margin-top:1px}
+
+/* bırakma alanı */
+.drop{border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);padding:26px 18px 22px;text-align:center;position:relative;transition:background .2s}
+.drop:after{content:"";position:absolute;inset:8px;border-radius:13px;border:1.5px dashed var(--soft2);pointer-events:none;transition:border-color .2s}
+.drop.over{background:var(--tint)}
+.drop.over:after{border-color:var(--accent)}
+.drop .big{width:48px;height:48px;margin:0 auto 12px;border-radius:15px;background:var(--tint);display:grid;place-items:center}
+.drop .big svg{width:24px;height:24px;fill:var(--accent)}
+.drop h2{font-size:15px;font-weight:600}
+.drop p{color:var(--muted);font-size:12.5px;margin:3px 0 14px}
+.pill{position:relative;z-index:1;background:var(--tint);color:var(--accent);font-weight:600;font-size:13px;padding:7px 16px;border-radius:999px;transition:background .15s}
+.pill:hover{background:var(--tint2)}
+.drop.compact{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left}
+.drop.compact:after{inset:5px;border-radius:14px}
+.drop.compact .big{width:34px;height:34px;border-radius:11px;margin:0;flex:none}
+.drop.compact .big svg{width:18px;height:18px}
+.drop.compact h2{flex:1;font-size:13.5px;font-weight:500;color:var(--muted)}
+.drop.compact p{display:none}
+
+/* satırlar */
+.row{display:flex;align-items:center;gap:12px;min-height:48px;padding:9px 16px;position:relative}
+.row+.row:before{content:"";position:absolute;top:0;right:16px;left:16px;height:1px;background:var(--line)}
+.row.ind+.row.ind:before{left:60px}
+.row .t{flex:1;min-width:0}
+.row .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.row .s{font-size:12px;color:var(--muted)}
+.tile{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--tint)}
+.tile svg{width:17px;height:17px;fill:var(--accent)}
+.x{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:var(--faint);flex:none}
+.x:hover{background:var(--soft2);color:var(--muted)}
+.x svg{width:10px;height:10px;fill:currentColor}
+
+/* seçim */
+.pick{position:relative;display:flex;align-items:center;gap:6px;color:var(--muted);max-width:66%}
+.pick span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick svg{width:10px;height:10px;flex:none;color:var(--faint)}
+.pick select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+
+/* anahtar */
+.sw{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:999px;background:var(--soft2);position:relative;cursor:pointer;transition:background .2s;flex:none}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform .2s}
+.sw:checked{background:var(--green)}
+.sw:checked:after{transform:translateX(18px)}
+.sw:disabled{opacity:.45;cursor:default}
+
+/* alt çubuk */
+.bottom{flex:none;padding:10px 16px 16px}
+.primary{width:100%;height:44px;border-radius:13px;background:var(--accent);color:#fff;font-size:15px;font-weight:600;position:relative;overflow:hidden;transition:filter .15s,background .2s}
+.primary:hover{filter:brightness(1.05)}
+.primary:disabled{background:var(--soft2);color:var(--faint);cursor:default;filter:none}
+.primary .fill{position:absolute;inset:0 auto 0 0;width:0;background:rgba(255,255,255,.22);transition:width .25s}
+.primary span{position:relative}
+.secondary{width:100%;height:42px;border-radius:13px;background:var(--soft);color:var(--accent);font-size:14.5px;font-weight:600}
+.secondary:hover{background:var(--soft2)}
+.secondary.danger{color:var(--red)}
+.two{display:flex;gap:8px}
+
+/* QR */
+.qrcard{padding:22px 20px 18px;text-align:center}
+.qr{width:200px;height:200px;margin:0 auto;padding:10px;background:#fff;border-radius:16px;box-shadow:0 0 0 1px var(--line)}
+.qr svg{width:100%;height:100%}
+.qrcard h2{font-size:16px;font-weight:600;margin-top:16px}
+.qrcard p{color:var(--muted);font-size:12.5px;margin-top:3px}
+.howto{display:flex;align-items:center;gap:10px;margin:14px auto 0;max-width:270px;padding:10px 12px;border-radius:12px;background:var(--soft);
+  color:var(--muted);font-size:12px;text-align:left}
+.howto svg{width:18px;height:18px;fill:var(--accent);flex:none}
+.url{font:12px ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;color:var(--muted);word-break:break-all;-webkit-user-select:text;user-select:text}
+.linkbtn{color:var(--accent);font-weight:500;font-size:13px;padding:4px 2px}
+
+/* link → QR */
+textarea{width:100%;min-height:74px;max-height:140px;resize:none;border:none;outline:none;background:transparent;padding:14px 16px;line-height:1.45;
+  -webkit-user-select:text;user-select:text;font-size:14px}
+textarea::placeholder{color:var(--faint)}
+textarea:focus-visible{outline:none}
+.card:focus-within{box-shadow:var(--shadow),0 0 0 3px var(--tint2)}
+.qr-empty{width:200px;height:200px;margin:0 auto;border-radius:16px;background:var(--soft);display:grid;place-items:center;color:var(--faint);font-size:12.5px;padding:24px}
+.count{font-size:11px;color:var(--faint);text-align:right;padding:0 14px 10px;min-height:14px}
+
+.toast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,12px);opacity:0;background:rgba(40,40,44,.9);color:#fff;font-size:13px;
+  padding:9px 16px;border-radius:999px;transition:.25s;pointer-events:none;max-width:90%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:rgba(200,40,30,.92);white-space:normal;border-radius:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="bar pywebview-drag-region">
+  <button class="icon-btn" id="backBtn" hidden><svg viewBox="0 0 16 16"><path d="M10.4 2.6a.9.9 0 0 1 0 1.3L6.3 8l4.1 4.1a.9.9 0 1 1-1.3 1.3L4.4 8.6a.9.9 0 0 1 0-1.2l4.7-4.8a.9.9 0 0 1 1.3 0z"/></svg></button>
+  <div class="logo" id="logo"><svg viewBox="0 0 16 16"><path d="M2 2h4.5v4.5H2zm1.4 1.4v1.7h1.7V3.4zM9.5 2H14v4.5H9.5zm1.4 1.4v1.7h1.7V3.4zM2 9.5h4.5V14H2zm1.4 1.4v1.7h1.7v-1.7zM12 9v3.3l1.1-1.1.9.9-2.6 2.6-2.6-2.6.9-.9 1.1 1.1V9z"/></svg></div>
+  <h1 id="title">QR Paylaş</h1>
+  <button class="icon-btn" id="settingsBtn"><svg viewBox="0 0 16 16"><path d="M2 4.25h6.1a2 2 0 0 1 3.8 0H14v1.5h-2.1a2 2 0 0 1-3.8 0H2zm8 .75a.6.6 0 1 0 0 0zM2 10.25h2.1a2 2 0 0 1 3.8 0H14v1.5H7.9a2 2 0 0 1-3.8 0H2z"/></svg></button>
+  <button class="icon-btn" id="closeBtn"><svg viewBox="0 0 16 16"><path d="M4.3 3.1 8 6.8l3.7-3.7 1.2 1.2L9.2 8l3.7 3.7-1.2 1.2L8 9.2l-3.7 3.7-1.2-1.2L6.8 8 3.1 4.3z"/></svg></button>
+</div>
+
+<div class="scroll">
+
+  <!-- ANA -->
+  <section class="view on" id="v-main">
+    <div class="seg tabs" id="tabs">
+      <div class="th"></div>
+      <button data-v="files" class="on"><svg viewBox="0 0 16 16"><path d="M4.5 1h4.8l3.7 3.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-11A1.5 1.5 0 0 1 4.5 1zm4 1.2v3.3h3.3z"/></svg><span data-i18n="tab.files"></span></button>
+      <button data-v="link"><svg viewBox="0 0 16 16"><path d="M6.9 9.1a.8.8 0 0 1 0-1.1l2.2-2.2a.8.8 0 1 1 1.1 1.1L8 9.1a.8.8 0 0 1-1.1 0zM4.6 7.6 3.5 8.7a2.4 2.4 0 0 0 3.4 3.4l1.1-1.1 1.1 1.1-1.1 1.1A4 4 0 0 1 2.4 7.6l1.1-1.1zm6.8.8 1.1-1.1a2.4 2.4 0 0 0-3.4-3.4L8 5 6.9 3.9 8 2.8a4 4 0 0 1 5.6 5.6l-1.1 1.1z"/></svg><span data-i18n="tab.link"></span></button>
+    </div>
+
+    <!-- Dosya gönder -->
+    <div id="p-files">
+      <div class="steps" id="steps">
+        <div class="step on" data-s="1"><i>1</i><span data-i18n="step.1"></span></div><div class="dash"></div>
+        <div class="step" data-s="2"><i>2</i><span data-i18n="step.2"></span></div><div class="dash"></div>
+        <div class="step" data-s="3"><i>3</i><span data-i18n="step.3"></span></div>
+      </div>
+
+      <div class="card" id="filesCard" hidden style="margin-bottom:10px"><div id="files"></div></div>
+      <div class="drop" id="drop">
+        <div class="big"><svg viewBox="0 0 24 24"><path d="M12 3.5a1 1 0 0 1 .7.3l4.5 4.5a1 1 0 0 1-1.4 1.4L13 6.9V15a1 1 0 1 1-2 0V6.9L8.2 9.7a1 1 0 0 1-1.4-1.4l4.5-4.5a1 1 0 0 1 .7-.3zM5 17a1 1 0 0 1 1 1v.5h12V18a1 1 0 1 1 2 0v1a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19v-1a1 1 0 0 1 1-1z"/></svg></div>
+        <h2 id="dropTitle"></h2>
+        <p data-i18n="drop.sub"></p>
+        <button class="pill" id="pickBtn"></button>
+      </div>
+
+      <div class="label" data-i18n="how.label"></div>
+      <div class="seg" id="mode">
+        <div class="th"></div>
+        <button data-v="wifi" class="on"><svg viewBox="0 0 16 16"><path d="M8 12a1.3 1.3 0 1 1 0 2.6A1.3 1.3 0 0 1 8 12zm0-3.6c1.5 0 2.8.6 3.8 1.5l-1 1.1A4 4 0 0 0 8 10a4 4 0 0 0-2.8 1l-1-1.1A5.5 5.5 0 0 1 8 8.4zm0-3.6c2.5 0 4.8 1 6.4 2.6l-1 1.1A7.5 7.5 0 0 0 8 6.3a7.5 7.5 0 0 0-5.4 2.2l-1-1.1A9 9 0 0 1 8 4.8z"/></svg><span data-i18n="mode.wifi"></span></button>
+        <button data-v="net"><svg viewBox="0 0 16 16"><path d="M8 1.3a6.7 6.7 0 1 0 0 13.4A6.7 6.7 0 0 0 8 1.3zm4.8 5.9h-2a10 10 0 0 0-.8-3.9 5.2 5.2 0 0 1 2.8 3.9zM8 2.9c.5.7 1.2 2.2 1.3 4.3H6.7C6.8 5.1 7.5 3.6 8 2.9zM3.2 8.8h2c.1 1.5.4 2.8.8 3.9a5.2 5.2 0 0 1-2.8-3.9zm2-1.6h-2A5.2 5.2 0 0 1 6 3.3a10 10 0 0 0-.8 3.9zM8 13.1c-.5-.7-1.2-2.2-1.3-4.3h2.6c-.1 2.1-.8 3.6-1.3 4.3zm2-.4c.4-1.1.7-2.4.8-3.9h2a5.2 5.2 0 0 1-2.8 3.9z"/></svg><span data-i18n="mode.net"></span></button>
+      </div>
+
+      <div class="card" style="margin-top:10px" id="opt-wifi">
+        <div class="row">
+          <div class="t" data-i18n="wifi.network"></div>
+          <label class="pick"><span id="netLabel"></span><svg viewBox="0 0 10 10"><path d="M1.5 3.5 5 7l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <select id="netSel"></select></label>
+        </div>
+        <p class="desc" data-i18n="wifi.desc"></p>
+        <div class="chips"><span class="chip" data-i18n="chip.private"></span><span class="chip" data-i18n="chip.nolimit"></span><span class="chip" data-i18n="chip.fast"></span></div>
+      </div>
+
+      <div id="opt-net" hidden>
+        <div class="card" style="margin-top:10px">
+          <div class="row">
+            <div class="t" data-i18n="net.service"></div>
+            <label class="pick"><span id="svcLabel"></span><svg viewBox="0 0 10 10"><path d="M1.5 3.5 5 7l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <select id="svcSel"></select></label>
+          </div>
+          <p class="desc" id="svcDesc"></p>
+          <div class="chips" id="svcChips"></div>
+        </div>
+        <p class="note"><svg viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 5.6a.8.8 0 0 0-.8.8v3.5a.8.8 0 0 0 1.6 0V7.9a.8.8 0 0 0-.8-.8zm0-2.8a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg><span data-i18n="net.warn"></span></p>
+        <p class="note"><svg viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 5.6a.8.8 0 0 0-.8.8v3.5a.8.8 0 0 0 1.6 0V7.9a.8.8 0 0 0-.8-.8zm0-2.8a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg><span data-i18n="net.why"></span></p>
+      </div>
+    </div>
+
+    <!-- Link → QR -->
+    <div id="p-link" hidden>
+      <div class="label" data-i18n="link.label" style="margin-top:0"></div>
+      <div class="card">
+        <textarea id="linkText" spellcheck="false" maxlength="2000"></textarea>
+        <div class="count" id="linkCount"></div>
+      </div>
+      <div class="card qrcard" style="margin-top:12px">
+        <div class="qr" id="linkQr" hidden></div>
+        <div class="qr-empty" id="linkEmpty" data-i18n="link.empty"></div>
+      </div>
+      <p class="note"><svg viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm0 5.6a.8.8 0 0 0-.8.8v3.5a.8.8 0 0 0 1.6 0V7.9a.8.8 0 0 0-.8-.8zm0-2.8a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg><span data-i18n="link.hint"></span></p>
+    </div>
+  </section>
+
+  <!-- SONUÇ -->
+  <section class="view" id="v-result">
+    <div class="steps">
+      <div class="step ok"><i>✓</i><span data-i18n="step.1"></span></div><div class="dash"></div>
+      <div class="step ok"><i>✓</i><span data-i18n="step.2"></span></div><div class="dash"></div>
+      <div class="step on"><i>3</i><span data-i18n="step.3"></span></div>
+    </div>
+    <div class="card qrcard">
+      <div class="qr" id="qr"></div>
+      <h2 data-i18n="result.scan"></h2>
+      <p id="resSub"></p>
+      <div class="howto"><svg viewBox="0 0 20 20"><path d="M7.5 3h5l1.2 2H16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2.3zM10 7.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/></svg><span data-i18n="result.howto"></span></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="row">
+        <div class="t"><div class="url" id="resUrl"></div></div>
+        <button class="linkbtn" id="copyBtn" data-i18n="result.copy"></button>
+      </div>
+    </div>
+    <p class="note" id="resFoot"></p>
+  </section>
+
+  <!-- AYARLAR -->
+  <section class="view" id="v-settings">
+    <div class="label" data-i18n="settings.general" style="margin-top:4px"></div>
+    <div class="card">
+      <div class="row">
+        <div class="t" data-i18n="settings.language"></div>
+        <label class="pick"><span id="langLabel"></span><svg viewBox="0 0 10 10"><path d="M1.5 3.5 5 7l3.5-3.5" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <select id="langSel"></select></label>
+      </div>
+      <div class="row">
+        <div class="t"><div class="n" data-i18n="settings.startup"></div><div class="s" id="startNote"></div></div>
+        <input type="checkbox" class="sw" id="startSw">
+      </div>
+    </div>
+    <div class="label" data-i18n="settings.privacy"></div>
+    <div class="card">
+      <div class="row ind"><div class="tile"><svg viewBox="0 0 16 16"><path d="M8 12a1.3 1.3 0 1 1 0 2.6A1.3 1.3 0 0 1 8 12zm0-3.6c1.5 0 2.8.6 3.8 1.5l-1 1.1A4 4 0 0 0 8 10a4 4 0 0 0-2.8 1l-1-1.1A5.5 5.5 0 0 1 8 8.4zm0-3.6c2.5 0 4.8 1 6.4 2.6l-1 1.1A7.5 7.5 0 0 0 8 6.3a7.5 7.5 0 0 0-5.4 2.2l-1-1.1A9 9 0 0 1 8 4.8z"/></svg></div>
+        <div class="t"><div class="n" data-i18n="mode.wifi"></div><div class="s" data-i18n="privacy.wifi"></div></div></div>
+      <div class="row ind"><div class="tile"><svg viewBox="0 0 16 16"><path d="M8 1.3a6.7 6.7 0 1 0 0 13.4A6.7 6.7 0 0 0 8 1.3zm4.8 5.9h-2a10 10 0 0 0-.8-3.9 5.2 5.2 0 0 1 2.8 3.9zM8 2.9c.5.7 1.2 2.2 1.3 4.3H6.7C6.8 5.1 7.5 3.6 8 2.9zM3.2 8.8h2c.1 1.5.4 2.8.8 3.9a5.2 5.2 0 0 1-2.8-3.9zm2-1.6h-2A5.2 5.2 0 0 1 6 3.3a10 10 0 0 0-.8 3.9zM8 13.1c-.5-.7-1.2-2.2-1.3-4.3h2.6c-.1 2.1-.8 3.6-1.3 4.3zm2-.4c.4-1.1.7-2.4.8-3.9h2a5.2 5.2 0 0 1-2.8 3.9z"/></svg></div>
+        <div class="t"><div class="n" data-i18n="mode.net"></div><div class="s" data-i18n="privacy.net"></div></div></div>
+    </div>
+    <p class="note" style="margin-top:10px"><span data-i18n="privacy.data"></span></p>
+    <button class="secondary danger" id="quitBtn" style="margin-top:22px" data-i18n="settings.quit"></button>
+    <p class="note" style="justify-content:center;margin-top:14px" id="version"></p>
+  </section>
+</div>
+
+<div class="bottom" id="bottom">
+  <button class="primary" id="goBtn" disabled><div class="fill" id="goFill"></div><span id="goText"></span></button>
+  <div class="two" id="linkBtns" hidden>
+    <button class="secondary" id="copyTextBtn" data-i18n="link.copytext"></button>
+    <button class="primary" id="savePngBtn" style="height:42px" data-i18n="link.save" disabled></button>
+  </div>
+  <button class="secondary" id="doneBtn" hidden></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = { lang:'en', strings:{}, files:[], tab:'files', mode:'wifi', nets:[], net:null, svc:'auto', services:[], busy:false, view:'main' };
+let api = null;
+
+/* ---- çeviri ---- */
+function T(key, p){ let s = (S.strings[S.lang]||{})[key] ?? (S.strings.en||{})[key] ?? key;
+  if (p) for (const k in p) s = s.split('{'+k+'}').join(p[k]); return s; }
+function applyI18n(){
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = T(el.dataset.i18n));
+  $('settingsBtn').title = T('settings.title');
+  $('linkText').placeholder = T('link.placeholder');
+  renderAll();
+}
+
+function fmt(n){const u=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<3){n/=1024;i++}return (i?(n<10?n.toFixed(1):Math.round(n)):n)+' '+u[i]}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function toast(msg, err, ms){const t=$('toast');t.textContent=msg;t.classList.toggle('err',!!err);t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),ms||(err?5000:2600))}
+
+/* ---- görünüm ---- */
+function show(view){
+  S.view = view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+view));
+  $('title').textContent = view==='settings' ? T('settings.title') : view==='result' ? T('result.title') : 'QR Paylaş';
+  $('backBtn').hidden = view==='main';
+  $('logo').hidden = view!=='main';
+  $('settingsBtn').hidden = view!=='main';
+  $('bottom').hidden = view==='settings';
+  $('goBtn').hidden = !(view==='main' && S.tab==='files');
+  $('linkBtns').hidden = !(view==='main' && S.tab==='link');
+  $('doneBtn').hidden = view!=='result';
+}
+
+function setSeg(el, v){ el.classList.toggle('right', el.querySelectorAll('button')[1].dataset.v===v);
+  el.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.v===v)); }
+
+function setTab(tab){ S.tab = tab; setSeg($('tabs'), tab); $('p-files').hidden = tab!=='files'; $('p-link').hidden = tab!=='link';
+  show('main'); if (tab==='link') setTimeout(()=>$('linkText').focus(), 50); }
+
+function setMode(m){ S.mode = m; setSeg($('mode'), m); $('opt-wifi').hidden = m!=='wifi'; $('opt-net').hidden = m!=='net'; save(); updateGo(); }
+
+function renderSteps(){
+  const cur = S.files.length ? 2 : 1;
+  $('steps').querySelectorAll('.step').forEach(s=>{ const n=+s.dataset.s; s.classList.toggle('on', n===cur); s.classList.toggle('ok', n<cur);
+    s.querySelector('i').textContent = n<cur ? '✓' : n; });
+}
+
+function renderFiles(){
+  const has = S.files.length>0;
+  $('filesCard').hidden = !has;
+  $('drop').classList.toggle('compact', has);
+  $('dropTitle').textContent = T(has ? 'drop.more' : 'drop.title');
+  $('pickBtn').textContent = T(has ? 'drop.add' : 'drop.pick');
+  $('files').innerHTML = S.files.map((f,i)=>`
+    <div class="row ind"><div class="tile"><svg viewBox="0 0 16 16">${f.dir
+      ? '<path d="M1.5 4A1.5 1.5 0 0 1 3 2.5h3.4l1.5 1.5H13A1.5 1.5 0 0 1 14.5 5.5v6.5a1.5 1.5 0 0 1-1.5 1.5H3A1.5 1.5 0 0 1 1.5 12z"/>'
+      : '<path d="M4.5 1h4.8l3.7 3.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-11A1.5 1.5 0 0 1 4.5 1zm4 1.2v3.3h3.3z"/>'}</svg></div>
+      <div class="t"><div class="n">${esc(f.name)}</div><div class="s">${f.dir ? esc(T('folder'))+' · ' : ''}${fmt(f.size)}</div></div>
+      <button class="x" data-i="${i}"><svg viewBox="0 0 10 10"><path d="M2 1 5 4l3-3 1 1-3 3 3 3-1 1-3-3-3 3-1-1 3-3-3-3z"/></svg></button></div>`).join('');
+  $('files').querySelectorAll('.x').forEach(b=>b.onclick=()=>{S.files.splice(+b.dataset.i,1);renderFiles()});
+  renderSteps(); updateGo();
+}
+function addFiles(list){ for (const f of list) if (!S.files.some(x=>x.path===f.path)) S.files.push(f); renderFiles(); }
+
+function renderNets(){
+  const sel = $('netSel');
+  sel.innerHTML = S.nets.map(n=>`<option value="${n.ip}">${esc(n.label)} — ${n.ip}</option>`).join('') || `<option value="">${esc(T('wifi.none'))}</option>`;
+  if (S.net && S.nets.some(n=>n.ip===S.net)) sel.value = S.net; else S.net = sel.value || null;
+  const n = S.nets.find(n=>n.ip===S.net);
+  $('netLabel').textContent = n ? n.label : T('wifi.none');
+}
+
+function renderSvc(){
+  const sel = $('svcSel');
+  sel.innerHTML = S.services.map(s=>`<option value="${s.id}">${s.id==='auto' ? esc(T('svc.auto')) : esc(s.name)}</option>`).join('');
+  if (!S.services.some(s=>s.id===S.svc)) S.svc = 'auto';
+  sel.value = S.svc;
+  const s = S.services.find(x=>x.id===S.svc) || {id:'auto'};
+  $('svcLabel').textContent = s.id==='auto' ? T('svc.auto') : s.name;
+  $('svcDesc').textContent = T('svc.'+s.id+'.desc');
+  const chips = [];
+  if (s.id!=='auto') {
+    chips.push(s.limit_h ? T('chip.upto',{size:s.limit_h}) : T('chip.nolimit'));
+    chips.push(T(s.direct ? 'chip.direct' : 'chip.page'));
+  }
+  $('svcChips').innerHTML = chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('');
+  $('svcChips').hidden = !chips.length;
+}
+
+function renderLangs(){
+  $('langSel').innerHTML = Object.keys(S.strings).map(c=>`<option value="${c}">${esc(S.strings[c]['lang.name'])}</option>`).join('');
+  $('langSel').value = S.lang; $('langLabel').textContent = (S.strings[S.lang]||{})['lang.name'] || S.lang;
+}
+
+function renderAll(){ renderFiles(); renderNets(); renderSvc(); renderLangs(); show(S.view); }
+
+function totalSize(){return S.files.reduce((a,f)=>a+f.size,0)}
+function updateGo(){
+  const ok = S.files.length>0 && !S.busy && !(S.mode==='wifi' && !S.net);
+  $('goBtn').disabled = !ok;
+  if (!S.busy) $('goText').textContent = S.files.length ? T('go.size',{size:fmt(totalSize())}) : T('go');
+}
+function progress(p, key){ $('goFill').style.width = Math.round(p*100)+'%'; $('goText').textContent = key ? T(key) : T('uploading',{pct:Math.round(p*100)}); }
+
+/* ---- dosya gönder ---- */
+async function go(){
+  if (!api) return;
+  S.busy = true; updateGo(); progress(0,'preparing');
+  try {
+    const paths = S.files.map(f=>f.path);
+    const r = S.mode==='wifi' ? await api.share_wifi(paths, S.net) : await api.share_internet(paths, S.svc);
+    if (r.error) throw new Error(r.error);
+    $('qr').innerHTML = r.qr;
+    $('resUrl').textContent = r.url;
+    if (S.mode==='wifi') {
+      const n = S.nets.find(n=>n.ip===S.net);
+      $('resSub').textContent = T('result.wifi.sub',{net: n ? n.label : S.net});
+      $('resFoot').textContent = T('result.wifi.foot');
+      $('doneBtn').textContent = T('result.stop'); $('doneBtn').classList.add('danger');
+    } else {
+      $('resSub').textContent = r.site + ' · ' + fmt(r.size) + ' · ' + T('svc.'+r.service+'.desc');
+      $('resFoot').textContent = T(r.direct ? 'result.direct.foot' : 'result.page.foot');
+      $('doneBtn').textContent = T('result.done'); $('doneBtn').classList.remove('danger');
+    }
+    show('result');
+  } catch (e) { toast(e.message || String(e), true); }
+  finally { S.busy = false; $('goFill').style.width = '0'; updateGo(); }
+}
+async function done(){ if (S.mode==='wifi' && api) await api.stop_wifi(); S.files = []; renderFiles(); show('main'); }
+
+async function copy(text, btn){
+  try { await navigator.clipboard.writeText(text); } catch(e) { if (api) await api.copy(text); }
+  if (btn) { btn.textContent = T('result.copied'); setTimeout(()=>btn.textContent = T(btn.dataset.i18n), 1500); }
+}
+
+/* ---- link → QR ---- */
+let qrTimer = null;
+function onLinkInput(){
+  const v = $('linkText').value;
+  $('linkCount').textContent = v.length ? v.length + ' / 2000' : '';
+  $('savePngBtn').disabled = !v.trim();
+  clearTimeout(qrTimer);
+  qrTimer = setTimeout(async () => {
+    const has = !!v.trim();
+    $('linkQr').hidden = !has; $('linkEmpty').hidden = has;
+    if (has && api) $('linkQr').innerHTML = await api.qr(v);
+  }, 120);
+}
+
+/* ---- ayarlar ---- */
+function save(){ if (api) api.save_settings({lang:S.lang, mode:S.mode, service:S.svc, net:S.net}); }
+function renderStartup(st){
+  $('startSw').checked = !!st.enabled;
+  $('startSw').disabled = !st.supported || (st.locked && !st.enabled);
+  $('startNote').textContent = st.note ? T(st.note) : T('settings.startup.note');
+}
+
+/* ---- Python'dan çağrılanlar ---- */
+window.app = {
+  progress: p => progress(p),
+  dropped: list => { if (S.tab!=='files') setTab('files'); addFiles(list); },
+  downloaded: name => toast('📲 ' + T('toast.downloaded',{name})),
+  networks: nets => { S.nets = nets; renderNets(); updateGo(); },
+};
+
+/* ---- olaylar ---- */
+$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.v));
+$('mode').querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.v));
+$('pickBtn').onclick = async () => { if (api) addFiles(await api.pick_files()); };
+$('netSel').onchange = e => { S.net = e.target.value; renderNets(); save(); updateGo(); };
+$('netSel').onfocus = () => api && api.refresh_networks();
+$('svcSel').onchange = e => { S.svc = e.target.value; renderSvc(); save(); };
+$('langSel').onchange = async e => { S.lang = e.target.value; save(); if (api) await api.set_language(S.lang); applyI18n(); };
+$('goBtn').onclick = go;
+$('doneBtn').onclick = done;
+$('copyBtn').onclick = e => copy($('resUrl').textContent, e.currentTarget);
+$('copyTextBtn').onclick = e => $('linkText').value && copy($('linkText').value, e.currentTarget);
+$('savePngBtn').onclick = async () => { if (api && await api.save_png($('linkText').value)) toast(T('link.saved')); };
+$('linkText').oninput = onLinkInput;
+$('settingsBtn').onclick = async () => { show('settings'); if (api) renderStartup(await api.startup_state()); };
+$('backBtn').onclick = () => S.view==='result' ? done() : show('main');
+$('closeBtn').onclick = () => api && api.hide();
+$('startSw').onchange = async e => { if (api) renderStartup(await api.set_startup(e.target.checked)); };
+$('quitBtn').onclick = () => api && api.quit();
+document.addEventListener('keydown', e => { if (e.key==='Escape') { if (S.view==='settings') show('main'); else api && api.hide(); } });
+
+let depth = 0;
+document.addEventListener('dragenter', e => { e.preventDefault(); depth++; if (S.view==='main') $('drop').classList.add('over'); });
+document.addEventListener('dragleave', () => { if (--depth<=0) { depth=0; $('drop').classList.remove('over'); } });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { e.preventDefault(); depth=0; $('drop').classList.remove('over'); });
+
+/* ---- başlat ---- */
+async function init(){
+  api = window.pywebview.api;
+  const st = await api.init();
+  S.strings = st.strings; S.lang = st.lang; S.services = st.services; S.nets = st.networks;
+  const s = st.settings || {};
+  S.mode = s.mode || 'wifi'; S.svc = s.service || 'auto'; S.net = s.net || null;
+  $('version').textContent = 'QR Paylaş ' + st.version;
+  setMode(S.mode); setTab('files'); applyI18n();
+}
+if (window.pywebview && window.pywebview.api) init(); else window.addEventListener('pywebviewready', init);
+</script>
+</body>
+</html>

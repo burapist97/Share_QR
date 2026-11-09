@@ -1,0 +1,38 @@
+name: Windows build
+
+on:
+  push:
+    paths-ignore:
+      - "simple/**"
+      - "**.md"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (X.Y.Z.0)"
+        default: "1.1.0.0"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build, self-test, package MSIX
+        shell: pwsh
+        run: ./build.ps1 -Version "${{ github.event.inputs.version || '1.1.0.0' }}" -Sign
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QRPaylas-windows
+          path: |
+            build/*.msix
+            build/*.zip
+            build/test.cer
+          if-no-files-found: error

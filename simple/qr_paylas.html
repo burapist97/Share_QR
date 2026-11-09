@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Paylaş</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--text:#1d1f23;--muted:#6b7280;--accent:#2563eb;--border:#e5e7eb;--err:#dc2626}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#e8eaed;--muted:#9aa0a6;--accent:#60a5fa;--border:#2c313a;--err:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:560px;margin:0 auto;padding:32px 16px}
+h1{font-size:24px;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 20px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+#drop{border:2px dashed var(--border);border-radius:12px;padding:40px 16px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+#drop.over{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+#drop b{color:var(--text)}
+progress{width:100%;height:8px;margin-top:14px;accent-color:var(--accent)}
+#status{margin-top:10px;color:var(--muted);font-size:14px;text-align:center}
+#status.err{color:var(--err)}
+#result{display:none;text-align:center}
+#qr{display:inline-block;padding:14px;background:#fff;border-radius:12px}
+#qr img,#qr canvas{display:block;width:240px;height:240px}
+.fname{font-weight:600;margin:14px 0 4px;word-break:break-all}
+.link{font-size:13px;color:var(--muted);word-break:break-all;margin-bottom:14px}
+button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+button.ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+/* QR Paylaş uygulamasının içinde (iframe) açıldığında */
+html.embed main{padding:0;max-width:none}
+html.embed .intro{display:none}
+</style>
+<script>if (window.self !== window.top) document.documentElement.classList.add('embed');</script>
+</head>
+<body>
+<main>
+  <h1 class="intro">📲 QR Paylaş</h1>
+  <p class="sub intro">Dosyayı bırakın, telefonun kamerasıyla QR'ı okutun, dosya iner.
+    Android ve iPhone'da çalışır. Telefonun aynı Wi-Fi ağında olması gerekmez.</p>
+
+  <div class="card" id="pickCard">
+    <div id="drop"><b>Dosyaları buraya sürükleyin</b><br>veya tıklayıp seçin
+      <input type="file" id="pick" multiple hidden></div>
+    <progress id="prog" max="100" value="0" hidden></progress>
+    <div id="status"></div>
+  </div>
+
+  <div class="card" id="result">
+    <div id="qr"></div>
+    <div class="fname" id="fname"></div>
+    <div class="link" id="link"></div>
+    <div class="note" id="hint" style="margin:-6px 0 14px"></div>
+    <div class="row">
+      <button class="ghost" id="copy">Linki kopyala</button>
+      <button id="again">Başka dosya gönder</button>
+    </div>
+  </div>
+
+  <p class="note">ℹ️ <b>100 MB'a kadar</b> dosyalar tmpfiles.org üzerinden paylaşılır, QR doğrudan indirir ve
+    dosya 60 dakika sonra silinir. <b>Daha büyük dosyalar</b> (boyut sınırı yok) gofile.io üzerinden paylaşılır;
+    QR bir indirme sayfası açar, dosya bir süre indirilmezse silinir. Birden fazla dosya seçerseniz tek bir
+    .zip yapılır. Linki bilen herkes indirebilir, o yüzden gizli belgeler için kullanmayın.</p>
+</main>
+
+<script src="lib/qrcode.min.js"></script>
+<script>window.QRCode||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>')</script>
+<script src="lib/jszip.min.js"></script>
+<script>window.JSZip||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>')</script>
+<script>
+const SMALL = 100 * 1024 * 1024; // bu boyuta kadar tmpfiles.org (doğrudan indirme), üstü gofile.io
+const $ = id => document.getElementById(id);
+const drop = $('drop'), pick = $('pick'), prog = $('prog'), statusEl = $('status');
+
+function setStatus(msg, isErr) { statusEl.textContent = msg; statusEl.className = isErr ? 'err' : ''; }
+function fmt(n){const u=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<3){n/=1024;i++}return (i?n.toFixed(1):n)+' '+u[i]}
+
+drop.onclick = () => pick.click();
+pick.onchange = () => { handle(pick.files); pick.value = ''; };
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => handle(e.dataTransfer.files));
+
+async function handle(fileList) {
+  const files = [...fileList];
+  if (!files.length) return;
+  let blob, name;
+  try {
+    if (files.length === 1) {
+      blob = files[0]; name = files[0].name;
+    } else {
+      setStatus('Dosyalar zip yapılıyor…');
+      const zip = new JSZip();
+      files.forEach(f => zip.file(f.name, f));
+      // STORE: sıkıştırmadan paketle (büyük dosyalarda çok daha hızlı)
+      blob = await zip.generateAsync({type: 'blob', compression: 'STORE'});
+      name = 'dosyalar.zip';
+    }
+    const big = blob.size > SMALL;
+    const url = big ? await uploadGofile(blob, name) : await uploadTmpfiles(blob, name);
+    showResult(url, name, blob.size, big);
+  } catch (err) {
+    prog.hidden = true;
+    setStatus('Yükleme başarısız: ' + (err.message || err) + '. İnternet bağlantınızı kontrol edip tekrar deneyin.', true);
+  }
+}
+
+function post(endpoint, blob, name, parse) {
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append('file', blob, name);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', endpoint);
+    prog.hidden = false; prog.value = 0;
+    setStatus('Yükleniyor… ' + fmt(blob.size));
+    xhr.upload.onprogress = e => { if (e.lengthComputable) { prog.value = e.loaded / e.total * 100; setStatus('Yükleniyor… %' + Math.round(prog.value)); } };
+    xhr.onload = () => {
+      prog.hidden = true;
+      try { resolve(parse(JSON.parse(xhr.responseText))); }
+      catch (e) { reject(new Error('sunucu yanıtı okunamadı (HTTP ' + xhr.status + ')')); }
+    };
+    xhr.onerror = () => reject(new Error('bağlantı hatası'));
+    xhr.send(fd);
+  });
+}
+
+// ≤100 MB: 60 dk saklanır, link doğrudan indirir
+function uploadTmpfiles(blob, name) {
+  return post('https://tmpfiles.org/api/v1/upload', blob, name, res => {
+    // Dönen link bir önizleme sayfası: /12345/ad → doğrudan indirme için /dl/12345/ad
+    const page = res.data.url.replace(/^http:/, 'https:');
+    return page.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+  });
+}
+
+// >100 MB: boyut sınırı yok, link bir indirme sayfası açar
+function uploadGofile(blob, name) {
+  return post('https://upload.gofile.io/uploadfile', blob, name, res => {
+    if (res.status !== 'ok') throw new Error(res.status);
+    return res.data.downloadPage;
+  });
+}
+
+function showResult(url, name, size, big) {
+  setStatus('');
+  $('pickCard').style.display = 'none';
+  $('result').style.display = 'block';
+  $('qr').innerHTML = '';
+  new QRCode($('qr'), {text: url, width: 480, height: 480, correctLevel: QRCode.CorrectLevel.M});
+  $('fname').textContent = name + ' · ' + fmt(size);
+  $('link').textContent = url;
+  $('hint').textContent = big
+    ? 'Telefonda açılan sayfada "Download" düğmesine dokunun.'
+    : 'Dosya 60 dakika sonra silinir.';
+  $('copy').onclick = () => navigator.clipboard.writeText(url).then(() => { $('copy').textContent = 'Kopyalandı ✓'; });
+}
+
+// Gömülüyse içerik yüksekliğini ana sayfaya bildir (iframe boyu ayarlansın)
+if (window.self !== window.top && window.ResizeObserver) {
+  new ResizeObserver(() => parent.postMessage({qrPaylasHeight: document.documentElement.scrollHeight}, '*'))
+    .observe(document.body);
+}
+
+$('again').onclick = () => {
+  $('result').style.display = 'none';
+  $('pickCard').style.display = 'block';
+  $('copy').textContent = 'Linki kopyala';
+};
+</script>
+</body>
+</html>
