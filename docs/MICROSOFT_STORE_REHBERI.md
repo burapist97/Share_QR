@@ -144,22 +144,33 @@ görünür (görünmezse **Manage additional languages** ile ekleyin). Her dil i
 - **Store logo** (isteğe bağlı): `store/store_logo_300.png`
 
 ### 6) Submission options (Gönderim seçenekleri)
-- **Publishing hold options:** *Publish as soon as possible* (onaylanınca hemen yayınla)
-- **Notes for certification** kutusuna şunu yapıştırın:
+- **Publishing hold options:** ● *Publish this submission as soon as it passes certification* (varsayılan)
+- **Notes for certification:** Not kutusu bu sayfada değil. Metindeki **Additional Testing Information**
+  bağlantısına tıklayın ve açılan sayfadaki not kutusuna şunu yapıştırın:
 
-  > The app uses runFullTrust because it runs a small local HTTP server so a phone on the same
-  > network can download files (TCP 8765–8814 only, only while sharing). It lives in the system
-  > tray; click the tray icon to open the window. Test: add any file, choose "Same Wi-Fi",
-  > click "Create QR Code" and open the shown address from another device on the same network.
+```text
+Scanload sends files from a Windows PC to a phone with a QR code. No account or sign-in is required.
 
-- **Restricted capabilities** sorusu çıkarsa (*runFullTrust* için gerekçe) aynı metnin ilk
-  cümlesini yazın.
+Why runFullTrust: Scanload is a packaged desktop (Win32) app. It runs a small local HTTP server so a phone on the same Wi-Fi can download the files the user picks. The server listens on TCP ports 8765-8814 only while a share is active, uses a random URL token, and stops when the user clicks Stop Sharing. The package declares a firewall rule for these ports.
+
+How to test:
+1. Start Scanload from the Start menu. A small window opens, and an icon is added to the system tray (click it to show or hide the window).
+2. Same Wi-Fi: click Choose Files..., pick any file, keep Same Wi-Fi selected, and click Create QR Code. Scan the code with a phone on the same network, or open the shown address from another device on that network, and download the file. Click Stop Sharing to end.
+3. Internet: select Internet, keep Service set to Automatic, and click Create QR Code. The file is uploaded to the selected third-party service (tmpfiles.org for small files) and a download link and QR code are shown.
+4. Link to QR: open the Link to QR tab and type any text. The QR code updates as you type. Save as PNG... saves it.
+5. Settings (slider icon in the top bar): language (English, Turkish, Spanish) and Open at Startup.
+```
+
+- **Restricted capabilities** veya *runFullTrust* için ayrı bir gerekçe kutusu çıkarsa, yukarıdaki
+  metnin "Why runFullTrust" paragrafını yapıştırın.
+- **Submission notification audience:** dokunmayın.
+- **Save**.
 
 ---
 
 ## Aşama 7 — Gönderin ve bekleyin
 
-1. Tüm bölümler “Complete” (Tamamlandı) olunca **Submit to the Store** deyin.
+1. Tüm bölümler “Complete” (Tamamlandı) olunca sağ üstteki **Submit for certification** düğmesine basın.
 2. Durum sırasıyla *Pre-processing → Certification → Release* olarak ilerler. İnceleme genelde
    **1–3 iş günü** sürer, bazen daha uzun.
 3. Sonuç e-postayla gelir.
