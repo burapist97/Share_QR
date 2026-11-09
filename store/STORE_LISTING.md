@@ -2,7 +2,7 @@
 
 Copy each language into Partner Center → **Store listings**. English is the primary language.
 
-**Category:** Productivity · **Age rating (IARC):** answer “No” to every question (no user-to-user communication; files only go to the user’s own device).
+**Category:** Productivity · **Age rating (IARC):** choose “All other app types”. Answer honestly: violence, gambling, etc. are “No”; if asked whether users can share content online, answer “Yes” (Internet mode creates a public download link).
 **Privacy policy URL:** publish `store/PRIVACY.md` (for example, the GitHub link to this file) and paste the link.
 **Screenshots:** at least one, 1366 × 768 or larger. Take them in light and dark appearance.
 **Store logo:** `store/store_logo_300.png`

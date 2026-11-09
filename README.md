@@ -28,7 +28,8 @@ simple/              earlier lightweight versions (Python script / single HTML f
 ```
 
 ## Build
-Every push runs **Actions → Windows build** on a Windows runner and publishes the `QRPaylas-windows` artifact (`.msix`, portable `.zip`, test certificate).
+Every push runs **Actions → Windows build** on a Windows runner and publishes a test build as the `QRPaylas-test` artifact (`.msix`, portable `.zip`, test certificate).
+To build the Store package, use **Run workflow** and enter the three Partner Center values; the result is the `QRPaylas-STORE` artifact.
 
 Locally (Windows, Python 3.12, Windows SDK):
 ```powershell
@@ -46,6 +47,8 @@ python app\qr_paylas_win.py
 ```
 
 ## Publish to the Microsoft Store
+Step-by-step guide in Turkish: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md)
+
 1. Create a developer account at https://partner.microsoft.com (check the current fee there).
 2. **Apps and games → New product → MSIX or PWA app**, reserve the name.
 3. From **Product management → Product identity**, copy the three values and build:
@@ -76,6 +79,6 @@ Bilgisayardan iPhone veya Android telefona QR kod ile dosya gönderin. Kablo yok
 - Sistem tepsisinde durur, tıklayınca küçük bir pencere açar, Windows ile başlayabilir.
 - İngilizce (varsayılan), Türkçe, İspanyolca. Açık ve koyu görünüm.
 
-**Derleme:** Her push'ta GitHub Actions Windows'ta derler; **Actions → Windows build → QRPaylas-windows** çıktısından `.msix` ve taşınabilir `.zip` indirilir.
+**Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**QRPaylas-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**QRPaylas-STORE**).
 
-**Store'a gönderme:** Yukarıdaki “Publish to the Microsoft Store” adımlarını izleyin. Mağaza metinleri `store/STORE_LISTING.md`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).
+**Store'a gönderme:** Adım adım Türkçe rehber: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md). Mağaza metinleri `store/STORE_LISTING.md`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).

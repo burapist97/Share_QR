@@ -1,5 +1,9 @@
 name: Windows build
 
+# Her push'ta bir TEST paketi üretilir (kendinden imzalı, kendi bilgisayarınızda denemek için).
+# Store'a yüklenecek paketi üretmek için: Actions → Windows build → Run workflow,
+# ve Partner Center → Ürün kimliği (Product identity) sayfasındaki üç değeri girin.
+
 on:
   push:
     paths-ignore:
@@ -8,8 +12,17 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version (X.Y.Z.0)"
+        description: "Version (X.Y.Z.0). Increase it for every Store update, e.g. 1.1.1.0"
         default: "1.1.0.0"
+      identity_name:
+        description: "Package/Identity/Name (from Partner Center). Leave empty for a test build"
+        default: ""
+      publisher:
+        description: "Package/Identity/Publisher, e.g. CN=12345678-ABCD-..."
+        default: ""
+      publisher_display_name:
+        description: "Package/Properties/PublisherDisplayName"
+        default: ""
 
 permissions:
   contents: read
@@ -17,6 +30,11 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      VERSION: ${{ inputs.version || '1.1.0.0' }}
+      IDENTITY_NAME: ${{ inputs.identity_name }}
+      PUBLISHER: ${{ inputs.publisher }}
+      PUBLISHER_DISPLAY_NAME: ${{ inputs.publisher_display_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,11 +44,22 @@ jobs:
 
       - name: Build, self-test, package MSIX
         shell: pwsh
-        run: ./build.ps1 -Version "${{ github.event.inputs.version || '1.1.0.0' }}" -Sign
+        run: |
+          if ($env:IDENTITY_NAME) {
+            if (-not $env:PUBLISHER -or -not $env:PUBLISHER_DISPLAY_NAME) {
+              throw "Store build needs all three Partner Center values."
+            }
+            Write-Host "Store build for $env:IDENTITY_NAME"
+            ./build.ps1 -Version $env:VERSION -IdentityName $env:IDENTITY_NAME `
+              -Publisher $env:PUBLISHER -PublisherDisplayName $env:PUBLISHER_DISPLAY_NAME
+          } else {
+            Write-Host "Test build (self-signed)"
+            ./build.ps1 -Version $env:VERSION -Sign
+          }
 
       - uses: actions/upload-artifact@v4
         with:
-          name: QRPaylas-windows
+          name: ${{ inputs.identity_name != '' && 'QRPaylas-STORE' || 'QRPaylas-test' }}
           path: |
             build/*.msix
             build/*.zip
