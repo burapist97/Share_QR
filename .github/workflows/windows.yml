@@ -59,7 +59,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.identity_name != '' && 'QRPaylas-STORE' || 'QRPaylas-test' }}
+          name: ${{ inputs.identity_name != '' && 'ShareQR-STORE' || 'ShareQR-test' }}
           path: |
             build/*.msix
             build/*.zip

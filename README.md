@@ -1,4 +1,4 @@
-# QR Paylaş
+# Share QR
 
 Send files from your PC to your iPhone or Android phone with a QR code. No cables, no app on the phone.
 
@@ -14,22 +14,35 @@ Send files from your PC to your iPhone or Android phone with a QR code. No cable
 
 ## Repository layout
 ```
-app/                 Windows app (Python + pywebview)
-  qr_paylas_win.py   tray, window, JavaScript bridge
-  core.py            local share server, networks, uploads, QR
-  winplat.py         start with Windows, MSIX detection, single instance
-  i18n.json/.py      English, Turkish, Spanish strings
-  ui/index.html      interface
-packaging/           MSIX manifest and tile images
-store/               Store listing (EN/TR/ES), privacy policy, 300×300 logo
-tools/make_icons.py  regenerates every icon
-build.ps1            exe → self-test → MSIX → portable zip
-simple/              earlier lightweight versions (Python script / single HTML file, Mac & Windows)
+app/                         Windows app (Python + pywebview)
+  share_qr.py                tray icon, window, JavaScript bridge (entry point)
+  core.py                    local share server, networks, uploads, QR codes
+  winplat.py                 open at startup, MSIX detection, single instance
+  i18n.json, i18n.py         English, Turkish, Spanish strings
+  ui/index.html              the interface
+  assets/                    app.ico, tray.png
+packaging/
+  AppxManifest.xml           MSIX manifest (startup task, firewall rule, languages)
+  Assets/                    Start menu and Store tile images
+store/
+  STORE_LISTING.md           Store texts in English, Turkish, Spanish
+  PRIVACY.md                 privacy policy (EN/TR/ES)
+  store_logo_300.png         Store logo
+  screenshots/{en,tr,es}/    5 Store screenshots per language, 1920×1080
+docs/
+  MICROSOFT_STORE_REHBERI.md step-by-step Store guide (Turkish)
+tools/
+  make_icons.py              regenerates every icon
+  screenshots/               regenerates the Store screenshots
+build.ps1                    exe → self-test → MSIX → portable zip
+requirements*.txt            Python packages
+.github/workflows/windows.yml  builds on every push; “Run workflow” makes the Store package
+simple/                      earlier lightweight versions (Python script / single HTML file)
 ```
 
 ## Build
-Every push runs **Actions → Windows build** on a Windows runner and publishes a test build as the `QRPaylas-test` artifact (`.msix`, portable `.zip`, test certificate).
-To build the Store package, use **Run workflow** and enter the three Partner Center values; the result is the `QRPaylas-STORE` artifact.
+Every push runs **Actions → Windows build** on a Windows runner and publishes a test build as the `ShareQR-test` artifact (`.msix`, portable `.zip`, test certificate).
+To build the Store package, use **Run workflow** and enter the three Partner Center values; the result is the `ShareQR-STORE` artifact.
 
 Locally (Windows, Python 3.12, Windows SDK):
 ```powershell
@@ -43,7 +56,7 @@ Import-Certificate -FilePath build\test.cer -CertStoreLocation Cert:\LocalMachin
 Run from source:
 ```powershell
 pip install -r requirements.txt
-python app\qr_paylas_win.py
+python app\share_qr.py
 ```
 
 ## Publish to the Microsoft Store
@@ -55,8 +68,8 @@ Step-by-step guide in Turkish: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_
    ```powershell
    .\build.ps1 -Version 1.1.0.0 -IdentityName "<Package/Identity/Name>" -Publisher "<Package/Identity/Publisher>" -PublisherDisplayName "<Package/Properties/PublisherDisplayName>"
    ```
-   (To build these in GitHub Actions instead, add the same parameters to the `build.ps1` step in `.github/workflows/windows.yml`.)
-4. **Packages:** upload `build\QRPaylas_1.1.0_x64.msix`. The Store signs it; you don’t need a certificate.
+   Or without a Windows PC: **Actions → Windows build → Run workflow** and enter the same three values.
+4. **Packages:** upload `build\ShareQR_1.1.0_x64.msix`. The Store signs it; you don’t need a certificate.
 5. **Store listings:** copy from `store/STORE_LISTING.md` (English, Turkish, Spanish) and add screenshots.
 6. **Privacy policy:** publish `store/PRIVACY.md` and paste its URL. Replace `{{CONTACT_EMAIL}}` first.
 7. **Submission options → Notes for certification:**
@@ -79,6 +92,6 @@ Bilgisayardan iPhone veya Android telefona QR kod ile dosya gönderin. Kablo yok
 - Sistem tepsisinde durur, tıklayınca küçük bir pencere açar, Windows ile başlayabilir.
 - İngilizce (varsayılan), Türkçe, İspanyolca. Açık ve koyu görünüm.
 
-**Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**QRPaylas-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**QRPaylas-STORE**).
+**Derleme:** Her push'ta GitHub Actions Windows'ta bir test paketi derler (**ShareQR-test**). Store paketi için **Actions → Windows build → Run workflow** ile Partner Center değerlerini girin (**ShareQR-STORE**).
 
 **Store'a gönderme:** Adım adım Türkçe rehber: [docs/MICROSOFT_STORE_REHBERI.md](docs/MICROSOFT_STORE_REHBERI.md). Mağaza metinleri `store/STORE_LISTING.md`, gizlilik politikası `store/PRIVACY.md` içinde (üç dilde).

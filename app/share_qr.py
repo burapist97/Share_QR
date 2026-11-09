@@ -1,7 +1,7 @@
 """
-QR Paylaş (Windows) - sistem tepsisinde duran, tıklanınca küçük bir pencere açan uygulama.
+Share QR (Windows) - sistem tepsisinde duran, tıklanınca küçük bir pencere açan uygulama.
 
-Çalıştırma (geliştirme):  python qr_paylas_win.py
+Çalıştırma (geliştirme):  python share_qr.py
 Paketleme:                ../build.ps1   (PyInstaller + MSIX)
 """
 
@@ -28,7 +28,7 @@ def resource(*parts):
 
 def settings_path():
     root = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~/.config")
-    folder = os.path.join(root, "QRPaylas")
+    folder = os.path.join(root, "ShareQR")
     os.makedirs(folder, exist_ok=True)
     return os.path.join(folder, "settings.json")
 
@@ -265,7 +265,7 @@ class App:
             pystray.Menu.SEPARATOR,
             pystray.MenuItem(lambda item: self.t("tray.quit"), self.quit),
         )
-        self.tray = pystray.Icon("QRPaylas", Image.open(resource("assets", "tray.png")), "QR Paylaş", menu)
+        self.tray = pystray.Icon("ShareQR", Image.open(resource("assets", "tray.png")), "Share QR", menu)
         self.tray.run_detached()
 
     def update_tray(self):
@@ -281,7 +281,7 @@ class App:
 
         start_hidden = winplat.launched_by_startup()
         self.window = webview.create_window(
-            "QR Paylaş",
+            "Share QR",
             resource("ui", "index.html"),
             js_api=self.api,
             width=WIN_W,

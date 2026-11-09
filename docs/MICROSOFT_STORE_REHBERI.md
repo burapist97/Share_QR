@@ -1,4 +1,4 @@
-# QR Paylaş'ı Microsoft Store'a yükleme rehberi
+# Share QR'ı Microsoft Store'a yükleme rehberi
 
 Hiç bilmeyen biri için, baştan sona. Toplam süre: hesap onayı dahil 1–2 saatlik iş, ardından
 Microsoft'un incelemesi için birkaç gün bekleme.
@@ -14,7 +14,7 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 - **Kimlik kartı veya pasaport** (kimlik doğrulaması için)
 - Telefon kamerası (kimlik doğrulamada selfie çekilir)
 - Destek için kullanacağınız bir **e-posta adresi** (mağazada görünür)
-- Windows bilgisayar **gerekmez**: paket GitHub'da üretilir. Yalnızca ekran görüntüsü almak için uygulamayı bir kez açmanız gerekir.
+- Windows bilgisayar **gerekmez**: paket GitHub'da üretilir, mağaza görselleri de repoda hazır.
 
 ---
 
@@ -36,8 +36,8 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 
 1. Partner Center'da **Apps and games** (Uygulamalar ve oyunlar) bölümüne girin.
 2. **+ New product** → **MSIX or PWA app** seçin.
-3. Ad olarak **QR Paylaş** yazın → **Check availability** → **Reserve product name**.
-   - Ad alınmışsa farklı bir ad deneyin (örn. *QR Paylaş – Send to Phone*). Seçtiğiniz adı bana
+3. Ad olarak **Share QR** yazın → **Check availability** → **Reserve product name**.
+   - Ad alınmışsa şunları deneyin: *QR Beam*, *Share QR – Send to Phone*. Seçtiğiniz adı bana
      yazın, uygulamanın içindeki adı da ona göre güncellerim.
 
 ---
@@ -50,7 +50,7 @@ Microsoft'un incelemesi için birkaç gün bekleme.
 
 | Partner Center'daki ad | Örnek |
 |---|---|
-| **Package/Identity/Name** | `12345AdSoyad.QRPaylas` |
+| **Package/Identity/Name** | `12345AdSoyad.ShareQR` |
 | **Package/Identity/Publisher** | `CN=1A2B3C4D-1234-5678-9ABC-0123456789AB` |
 | **Package/Properties/PublisherDisplayName** | `Ad Soyad` |
 
@@ -67,8 +67,8 @@ Bu değerler gizli değildir ama **birebir** kopyalanmalıdır (boşluk ve büy�
    - **identity_name / publisher / publisher_display_name:** Aşama 3'teki üç değer
 4. Yeşil **Run workflow** düğmesine basın. Yaklaşık 2–3 dakika sürer.
 5. Bitince (yeşil ✓) çalışmaya tıklayın, sayfanın altındaki **Artifacts** bölümünden
-   **QRPaylas-STORE** dosyasını indirin.
-6. İnen zip'i açın. İçindeki **`QRPaylas_1.1.0_x64.msix`** Store'a yükleyeceğiniz dosyadır.
+   **ShareQR-STORE** dosyasını indirin.
+6. İnen zip'i açın. İçindeki **`ShareQR_1.1.0_x64.msix`** Store'a yükleyeceğiniz dosyadır.
 
 > Kırmızı ✗ çıkarsa çalışmaya tıklayıp hata satırının ekran görüntüsünü bana gönderin.
 
@@ -85,13 +85,21 @@ Uygulama internete dosya yükleyebildiği için Store bir **gizlilik politikası
    **https://burapist97.github.io/Share_QR/store/PRIVACY.html**
    Tarayıcıda açıp sayfanın göründüğünü kontrol edin. Açılmazsa bana yazın.
 
-### 5b. Ekran görüntüleri
-- En az **1**, ideali **4–5** ekran görüntüsü. PNG, en az **1366 × 768** piksel (Partner Center
-  yükleme sayfasında güncel boyut kuralını gösterir).
-- Öneri: Ana ekran, dosyalar eklenmiş hali, QR sonucu, Linkten QR, ayarlar. Açık ve koyu temadan birer tane.
-- Uygulamayı açıp Windows'ta **Win + Shift + S** ile alabilirsiniz. Pencere küçük olduğu için
-  bir arka plan üzerine ortalayıp 1366 × 768'e tamamlamak gerekir. **İsterseniz bunları ben
-  hazırlayabilirim**; üç dilde, doğru boyutta.
+### 5b. Ekran görüntüleri — hazır
+Her dil için 5 adet, 1920 × 1080 PNG, repoda hazır:
+
+| Dil | Klasör |
+|---|---|
+| English | `store/screenshots/en/` |
+| Türkçe | `store/screenshots/tr/` |
+| Español | `store/screenshots/es/` |
+
+Her klasörde aynı sırayla: `01-send-files`, `02-scan-qr`, `03-internet`, `04-link-to-qr`, `05-tray-dark`.
+İndirmek için GitHub'da dosyaya tıklayın → sağ üstteki **Download raw file** (indirme) simgesi.
+Ya da repoyu topluca indirin: repo ana sayfası → yeşil **Code** → **Download ZIP**.
+
+> Uygulama değiştiğinde görseller tek komutla yeniden üretilir:
+> `node tools/screenshots/make_screenshots.cjs`
 
 ---
 
@@ -131,7 +139,7 @@ IARC anketi doldurulur, sonunda otomatik bir yaş sınırı verilir.
 Paket üç dili içerdiği için **English (United States)**, **Turkish** ve **Spanish** listeleri
 görünür (görünmezse **Manage additional languages** ile ekleyin). Her dil için:
 - **Description, Short description, Features, Keywords:** `store/STORE_LISTING.md` dosyasından kopyalayın
-- **Screenshots:** Aşama 5b'deki görseller
+- **Screenshots:** o dilin klasöründeki 5 görsel (`store/screenshots/en/` → English, `tr/` → Turkish, `es/` → Spanish), 01'den 05'e sırayla
 - **Store logo** (isteğe bağlı): `store/store_logo_300.png`
 
 ### 6) Submission options (Gönderim seçenekleri)

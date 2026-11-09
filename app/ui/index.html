@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>QR Paylaş</title>
+<title>Share QR</title>
 <style>
 :root{
   --bg:#f5f5f7; --card:#fff; --soft:rgba(0,0,0,.04); --soft2:rgba(0,0,0,.07);
@@ -164,7 +164,7 @@ textarea:focus-visible{outline:none}
 <div class="bar pywebview-drag-region">
   <button class="icon-btn" id="backBtn" hidden><svg viewBox="0 0 16 16"><path d="M10.4 2.6a.9.9 0 0 1 0 1.3L6.3 8l4.1 4.1a.9.9 0 1 1-1.3 1.3L4.4 8.6a.9.9 0 0 1 0-1.2l4.7-4.8a.9.9 0 0 1 1.3 0z"/></svg></button>
   <div class="logo" id="logo"><svg viewBox="0 0 16 16"><path d="M2 2h4.5v4.5H2zm1.4 1.4v1.7h1.7V3.4zM9.5 2H14v4.5H9.5zm1.4 1.4v1.7h1.7V3.4zM2 9.5h4.5V14H2zm1.4 1.4v1.7h1.7v-1.7zM12 9v3.3l1.1-1.1.9.9-2.6 2.6-2.6-2.6.9-.9 1.1 1.1V9z"/></svg></div>
-  <h1 id="title">QR Paylaş</h1>
+  <h1 id="title">Share QR</h1>
   <button class="icon-btn" id="settingsBtn"><svg viewBox="0 0 16 16"><path d="M2 4.25h6.1a2 2 0 0 1 3.8 0H14v1.5h-2.1a2 2 0 0 1-3.8 0H2zm8 .75a.6.6 0 1 0 0 0zM2 10.25h2.1a2 2 0 0 1 3.8 0H14v1.5H7.9a2 2 0 0 1-3.8 0H2z"/></svg></button>
   <button class="icon-btn" id="closeBtn"><svg viewBox="0 0 16 16"><path d="M4.3 3.1 8 6.8l3.7-3.7 1.2 1.2L9.2 8l3.7 3.7-1.2 1.2L8 9.2l-3.7 3.7-1.2-1.2L6.8 8 3.1 4.3z"/></svg></button>
 </div>
@@ -326,7 +326,7 @@ function toast(msg, err, ms){const t=$('toast');t.textContent=msg;t.classList.to
 function show(view){
   S.view = view;
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+view));
-  $('title').textContent = view==='settings' ? T('settings.title') : view==='result' ? T('result.title') : 'QR Paylaş';
+  $('title').textContent = view==='settings' ? T('settings.title') : view==='result' ? T('result.title') : 'Share QR';
   $('backBtn').hidden = view==='main';
   $('logo').hidden = view!=='main';
   $('settingsBtn').hidden = view!=='main';
@@ -502,7 +502,7 @@ async function init(){
   S.strings = st.strings; S.lang = st.lang; S.services = st.services; S.nets = st.networks;
   const s = st.settings || {};
   S.mode = s.mode || 'wifi'; S.svc = s.service || 'auto'; S.net = s.net || null;
-  $('version').textContent = 'QR Paylaş ' + st.version;
+  $('version').textContent = 'Share QR ' + st.version;
   setMode(S.mode); setTab('files'); applyI18n();
 }
 if (window.pywebview && window.pywebview.api) init(); else window.addEventListener('pywebviewready', init);

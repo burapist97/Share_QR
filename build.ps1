@@ -1,24 +1,24 @@
 ﻿<#
-  QR Paylaş - Windows derleme betiği
+  Share QR - Windows derleme betiği
   ----------------------------------
   1) İkonları üretir
-  2) PyInstaller ile build\dist\QRPaylas\QRPaylas.exe oluşturur ve kendini test eder
-  3) MSIX paketi oluşturur: build\QRPaylas_<sürüm>_x64.msix   (Store'a yüklenecek dosya)
-  4) Taşınabilir zip: build\QRPaylas_<sürüm>_portable.zip
+  2) PyInstaller ile build\dist\ShareQR\ShareQR.exe oluşturur ve kendini test eder
+  3) MSIX paketi oluşturur: build\ShareQR_<sürüm>_x64.msix   (Store'a yüklenecek dosya)
+  4) Taşınabilir zip: build\ShareQR_<sürüm>_portable.zip
 
   Gerekenler: Python 3.12, Windows 10/11 SDK (makeappx, makepri, signtool)
 
   Store için (değerleri Partner Center > Ürün kimliği sayfasından alın):
-    .\build.ps1 -Version 1.0.0.0 -IdentityName "12345Ad.QRPaylas" -Publisher "CN=XXXXXXXX-...." -PublisherDisplayName "Adınız"
+    .\build.ps1 -Version 1.0.0.0 -IdentityName "12345Ad.ShareQR" -Publisher "CN=XXXXXXXX-...." -PublisherDisplayName "Adınız"
 
   Yerel deneme (kendinden imzalı sertifika ile imzalar):
     .\build.ps1 -Sign
 #>
 param(
   [string]$Version = "1.1.0.0",
-  [string]$IdentityName = "QRPaylas.Dev",
-  [string]$Publisher = "CN=QRPaylasDev",
-  [string]$PublisherDisplayName = "QR Paylas",
+  [string]$IdentityName = "ShareQR.Dev",
+  [string]$Publisher = "CN=ShareQRDev",
+  [string]$PublisherDisplayName = "Share QR",
   [switch]$Sign,
   [switch]$SkipInstall
 )
@@ -38,7 +38,7 @@ python tools/make_icons.py
 Write-Host "==> PyInstaller" -ForegroundColor Cyan
 if (Test-Path $build) { Remove-Item $build -Recurse -Force }
 python -m PyInstaller --noconfirm --clean --windowed `
-  --name QRPaylas `
+  --name ShareQR `
   --icon "$root\app\assets\app.ico" `
   --add-data "$root\app\ui;ui" `
   --add-data "$root\app\assets;assets" `
@@ -46,19 +46,19 @@ python -m PyInstaller --noconfirm --clean --windowed `
   --hidden-import pystray._win32 `
   --collect-submodules winrt `
   --distpath "$build\dist" --workpath "$build\work" --specpath "$build" `
-  "$root\app\qr_paylas_win.py"
+  "$root\app\share_qr.py"
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller başarısız" }
 
-$exe = "$build\dist\QRPaylas\QRPaylas.exe"
+$exe = "$build\dist\ShareQR\ShareQR.exe"
 Write-Host "==> Kendi kendini test" -ForegroundColor Cyan
 $p = Start-Process -FilePath $exe -ArgumentList "--selftest" -Wait -PassThru
-$log = "$build\dist\QRPaylas\selftest.log"
+$log = "$build\dist\ShareQR\selftest.log"
 if (Test-Path $log) { Get-Content $log; Remove-Item $log }
 if ($p.ExitCode -ne 0) { throw "Self-test başarısız (çıkış kodu $($p.ExitCode))" }
 
 Write-Host "==> Taşınabilir zip" -ForegroundColor Cyan
 $short = $Version -replace '\.0$', ''
-Compress-Archive -Path "$build\dist\QRPaylas" -DestinationPath "$build\QRPaylas_${short}_portable.zip" -Force
+Compress-Archive -Path "$build\dist\ShareQR" -DestinationPath "$build\ShareQR_${short}_portable.zip" -Force
 
 Write-Host "==> MSIX" -ForegroundColor Cyan
 $kit = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
@@ -68,7 +68,7 @@ $bin = $kit.DirectoryName
 
 $layout = "$build\msix"
 New-Item -ItemType Directory -Force -Path $layout | Out-Null
-Copy-Item "$build\dist\QRPaylas" "$layout\QRPaylas" -Recurse
+Copy-Item "$build\dist\ShareQR" "$layout\ShareQR" -Recurse
 Copy-Item "$root\packaging\Assets" "$layout\Assets" -Recurse
 $manifest = Get-Content "$root\packaging\AppxManifest.xml" -Raw -Encoding UTF8
 $manifest = $manifest.Replace('{{IDENTITY_NAME}}', $IdentityName).Replace('{{PUBLISHER}}', $Publisher).
@@ -82,7 +82,7 @@ Push-Location $layout
 if ($LASTEXITCODE -ne 0) { Pop-Location; throw "makepri başarısız" }
 Pop-Location
 
-$msix = "$build\QRPaylas_${short}_x64.msix"
+$msix = "$build\ShareQR_${short}_x64.msix"
 & "$bin\makeappx.exe" pack /d $layout /p $msix /o
 if ($LASTEXITCODE -ne 0) { throw "makeappx başarısız" }
 
@@ -91,7 +91,7 @@ if ($Sign) {
   $cert = Get-ChildItem Cert:\CurrentUser\My | Where-Object { $_.Subject -eq $Publisher } | Select-Object -First 1
   if (-not $cert) {
     $cert = New-SelfSignedCertificate -Type Custom -Subject $Publisher -KeyUsage DigitalSignature `
-      -FriendlyName "QR Paylas test" -CertStoreLocation Cert:\CurrentUser\My `
+      -FriendlyName "Share QR test" -CertStoreLocation Cert:\CurrentUser\My `
       -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")
   }
   $pwd = ConvertTo-SecureString -String "qrpaylas" -Force -AsPlainText

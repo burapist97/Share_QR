@@ -1,5 +1,5 @@
 """
-QR Paylaş - çekirdek: paylaşım sunucusu, ağ listesi, internet yüklemeleri, QR üretimi.
+Share QR - çekirdek: paylaşım sunucusu, ağ listesi, internet yüklemeleri, QR üretimi.
 GUI'den bağımsızdır; Linux/Mac'te de test edilebilir.
 """
 
@@ -214,7 +214,7 @@ def phone_page(lang, token, files):
     return (
         '<!doctype html><html lang="%s"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-        '<meta name="color-scheme" content="light dark"><title>QR Paylaş</title><style>%s</style></head>'
+        '<meta name="color-scheme" content="light dark"><title>Share QR</title><style>%s</style></head>'
         '<body><main>%s</main></body></html>' % (lang, PHONE_CSS, body)
     )
 
@@ -283,7 +283,7 @@ class ShareServer:
         srv = self
 
         class Handler(BaseHTTPRequestHandler):
-            server_version = "QRPaylas"
+            server_version = "ShareQR"
 
             def log_message(self, *a):
                 pass
@@ -413,7 +413,7 @@ def prepare_upload(paths, tmpdir):
 
 def multipart_upload(host, path, file_path, file_name, field="file", fields=None, progress=None, timeout=60):
     """Dosyayı bellekte tutmadan multipart/form-data olarak yükler; yanıt metnini döndürür."""
-    boundary = "----QRPaylas" + secrets.token_hex(12)
+    boundary = "----ShareQR" + secrets.token_hex(12)
     pre = b""
     for k, v in (fields or {}).items():
         pre += ("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n" % (boundary, k, v)).encode()
@@ -431,7 +431,7 @@ def multipart_upload(host, path, file_path, file_name, field="file", fields=None
         conn.putrequest("POST", path)
         conn.putheader("Content-Type", "multipart/form-data; boundary=%s" % boundary)
         conn.putheader("Content-Length", str(len(pre) + size + len(tail)))
-        conn.putheader("User-Agent", "QRPaylas/1.1")
+        conn.putheader("User-Agent", "ShareQR/1.1")
         conn.endheaders()
         conn.send(pre)
         sent = 0
